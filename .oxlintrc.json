@@ -1,0 +1,23 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "ignorePatterns": [
+    ".agent/**",
+    ".agents/**",
+    ".claude/**",
+    ".codex/**",
+    ".continue/**",
+    ".cursor/**",
+    ".gemini/**",
+    ".opencode/**",
+    ".pi/**",
+    ".roo/**",
+    ".windsurf/**",
+    "**/dist/**",
+    "**/node_modules/**"
+  ],
+  "rules": {
+    "prefer-const": "error",
+    "no-unused-vars": "warn",
+    "no-empty": "warn"
+  }
+}

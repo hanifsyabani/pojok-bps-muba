@@ -1,0 +1,22 @@
+{
+  "name": "project-bps",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "app/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun run --parallel dev:api dev:web",
+    "dev:web": "cd app/web && bun run dev",
+    "dev:api": "bun --watch app/api/src/index.ts",
+    "build": "bun run --filter '@bps/*' --if-present build",
+    "typecheck": "bun run --filter '@bps/*' --if-present typecheck"
+  },
+  "devDependencies": {
+    "@oxlint/plugins": "^1.87.0",
+    "@types/bun": "latest",
+    "oxlint": "^1.87.0",
+    "typescript": "~6"
+  }
+}
