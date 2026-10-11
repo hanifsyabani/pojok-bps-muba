@@ -1,6 +1,6 @@
 import { navItems } from "../constants/navigation";
 
-  const validPaths = new Set(navItems.map((item) => item.path));
+  const validPaths = new Set([...navItems.map((item) => item.path), "/admin-dashboard"]);
 
 
 export  function normalizePath(path: string) {

@@ -57,6 +57,7 @@ export type DesilSubmission = {
 
 export type PortalTopic = {
   label: string;
+  icon: "users-round" | "hand-coins" | "chart-no-axes-combined" | "book-open" | "file-text" | "database" | "calendar-days" | "monitor";
   helper: string;
   tone: Tone;
   x: number;

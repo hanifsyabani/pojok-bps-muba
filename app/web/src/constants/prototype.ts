@@ -40,14 +40,14 @@ export const quickStatistics: StatisticCard[] = [
 export const portalNetworkCenter = { x: 450, y: 168 };
 
 export const portalTopics: PortalTopic[] = [
-  { label: "Kependudukan", helper: "Data sosial", tone: "sky", x: 120, y: 92, path: "/statistik-data" },
-  { label: "Kemiskinan", helper: "Indikator contoh", tone: "orange", x: 260, y: 46, path: "/statistik-data" },
-  { label: "Ekonomi", helper: "Tren daerah", tone: "green", x: 650, y: 58, path: "/statistik-data" },
-  { label: "Publikasi", helper: "Katalog contoh", tone: "sky", x: 780, y: 124, path: "/layanan" },
-  { label: "DTSEN", helper: "Perbaikan desil", tone: "orange", x: 735, y: 248, path: "/perbaikan-data-desil" },
-  { label: "PST", helper: "Layanan data", tone: "green", x: 170, y: 228, path: "/layanan" },
-  { label: "Kegiatan", helper: "Agenda BPS", tone: "sky", x: 345, y: 284, path: "/kegiatan" },
-  { label: "Admin", helper: "Demo monitoring", tone: "green", x: 570, y: 290, path: "/admin-dashboard" }
+  { label: "Kependudukan", icon: "users-round", helper: "Data sosial", tone: "sky", x: 120, y: 128, path: "/statistik-data" },
+  { label: "Kemiskinan", icon: "hand-coins", helper: "Indikator contoh", tone: "orange", x: 280, y: 62, path: "/statistik-data" },
+  { label: "Ekonomi", icon: "chart-no-axes-combined", helper: "Tren daerah", tone: "green", x: 650, y: 66, path: "/statistik-data" },
+  { label: "Publikasi", icon: "book-open", helper: "Katalog contoh", tone: "sky", x: 790, y: 136, path: "/layanan" },
+  { label: "DTSEN", icon: "file-text", helper: "Perbaikan desil", tone: "orange", x: 760, y: 226, path: "/perbaikan-data-desil" },
+  { label: "PST", icon: "database", helper: "Layanan data", tone: "green", x: 180, y: 224, path: "/layanan" },
+  { label: "Kegiatan", icon: "calendar-days", helper: "Agenda BPS", tone: "sky", x: 355, y: 290, path: "/kegiatan" },
+  { label: "Admin", icon: "monitor", helper: "Demo monitoring", tone: "green", x: 575, y: 292, path: "/admin-dashboard" }
 ];
 
 export const profileHighlights: ProfileHighlight[] = [
