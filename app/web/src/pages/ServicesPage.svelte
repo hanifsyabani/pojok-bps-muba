@@ -17,7 +17,6 @@
       </p>
     </div>
     <div class="page-note">
-      <strong class="font-bold">Frontend-only</strong>
       <span class="text-sm">Tombol layanan menampilkan simulasi interaksi, belum mengirim data ke server.</span>
     </div>
   </div>
@@ -29,7 +28,7 @@
       {#each services as service}
         <article class={["relative flex flex-col gap-4 overflow-hidden rounded-lg border border-border-default bg-surface p-5 shadow-sm", toneClasses[service.tone]]}>
           <div class="absolute inset-y-0 left-0 w-1 bg-(--tone-color)"></div>
-          <h2 class="text-base font-bold text-(--tone-text)">{service.title}</h2>
+          <h2 class="text-base font-bold ">{service.title}</h2>
           <p class="text-sm">{service.description}</p>
           <div>
             <strong class="font-bold">Persyaratan</strong>

@@ -7,12 +7,12 @@ import {
   type HealthResponse
 } from "@bps/shared";
 
-const port = Number(Bun.env.PORT ?? 3000);
+const port = Number(process.env.PORT ?? 3000);
 
 export const app = new Elysia()
   .use(
     cors({
-      origin: Bun.env.CORS_ORIGIN ?? "http://localhost:5173"
+      origin: process.env.CORS_ORIGIN ?? "http://localhost:5173"
     })
   )
   .get("/", () => ({
@@ -24,7 +24,7 @@ export const app = new Elysia()
     (): HealthResponse => ({
       ok: true,
       service: "api",
-      version: Bun.env.npm_package_version ?? "0.1.0",
+      version: process.env.npm_package_version ?? "0.1.0",
       time: new Date().toISOString()
     })
   )
@@ -34,7 +34,11 @@ export const app = new Elysia()
       message: "Halo dari Elysia + Bun.",
       stack: ["Svelte", "Elysia", "Bun", "TypeScript"]
     })
-  )
-  .listen(port);
+  );
 
-console.log(`API ready on http://localhost:${app.server?.port}`);
+export default app;
+
+if (import.meta.main) {
+  app.listen(port);
+  console.log(`API ready on http://localhost:${app.server?.port}`);
+}
