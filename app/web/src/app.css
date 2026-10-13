@@ -1,5 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: "Poppins", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -47,6 +50,50 @@
   --shadow-lg: 0 24px 56px rgb(16 32 51 / 0.18);
 }
 
+@theme inline {
+  --color-background: var(--color-surface);
+  --color-foreground: var(--color-ink);
+  --color-card: var(--color-surface);
+  --color-card-foreground: var(--color-ink);
+  --color-popover: var(--color-surface);
+  --color-popover-foreground: var(--color-ink);
+  --color-primary: var(--color-bps-sky-text);
+  --color-primary-foreground: var(--color-inverse);
+  --color-secondary: var(--color-bps-sky-light);
+  --color-secondary-foreground: var(--color-bps-sky-text);
+  --color-muted-foreground: var(--color-muted);
+  --color-accent: var(--color-bps-sky-light);
+  --color-accent-foreground: var(--color-ink);
+  --color-destructive: var(--color-danger-text);
+  --color-destructive-foreground: var(--color-inverse);
+  --color-border: var(--color-border-default);
+  --color-input: var(--color-border-strong);
+  --color-ring: var(--color-bps-sky);
+}
+
+:root {
+  --radius: 0.5rem;
+  --secondary: var(--color-bps-sky-light);
+  --foreground: var(--color-ink);
+
+  /* Categorical district colors distinguish boundaries, not statistical values. */
+  --map-sanga-desa: #69b5d6;
+  --map-babat-toman: #b5ca7a;
+  --map-batanghari-leko: #edc06d;
+  --map-plakat-tinggi: #b59bcb;
+  --map-lawang-wetan: #e3a083;
+  --map-sungai-keruh: #7abd9c;
+  --map-jirak-jaya: #cfd580;
+  --map-sekayu: #59a9a1;
+  --map-lais: #86aad5;
+  --map-sungai-lilin: #d997ad;
+  --map-keluang: #d5af74;
+  --map-babat-supat: #a9bde0;
+  --map-bayung-lencir: #85beaa;
+  --map-lalan: #e8b17b;
+  --map-tungkal-jaya: #9acbdc;
+}
+
 @layer base {
   html {
     @apply scroll-smooth bg-base;
@@ -69,6 +116,17 @@
   @media (prefers-reduced-motion: reduce) {
     html {
       @apply scroll-auto;
+    }
+  }
+}
+
+@layer utilities {
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot="alert-dialog-content"],
+    [data-slot="alert-dialog-overlay"],
+    [data-slot="dialog-content"],
+    [data-slot="dialog-overlay"] {
+      animation: none !important;
     }
   }
 }

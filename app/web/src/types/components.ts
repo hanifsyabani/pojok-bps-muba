@@ -31,3 +31,10 @@ export type SearchDialogProps = NavigationProps & {
 export type PortalNetworkProps = NavigationProps & {
   topics: PortalTopic[];
 };
+
+export type StatisticsPageProps = NavigationProps;
+export type MubaMapProps = NavigationProps;
+
+export type KecamatanStatisticsPageProps = NavigationProps & {
+  currentPath: string;
+};

@@ -1,16 +1,9 @@
-export type UploadState = "empty" | "uploading" | "done" | "invalid";
-export type UploadId = "surat" | "identitas" | "domisili";
+import type { DesilDocument, DesilDocumentId, DesilInput } from "@bps/shared";
 
-export type DesilForm = {
-  nama: string;
-  nik: string;
-  kk: string;
-  telepon: string;
-  desa: string;
-  kecamatan: string;
-  alamat: string;
-  alasan: string;
-};
+export type UploadState = "empty" | "done" | "invalid";
+export type UploadId = DesilDocumentId;
+
+export type DesilForm = Omit<DesilInput, "kecamatan"> & { kecamatan: DesilInput["kecamatan"] | "" };
 
 export type UploadDocument = {
   id: UploadId;
@@ -20,6 +13,7 @@ export type UploadDocument = {
 
 export type UploadItem = UploadDocument & {
   file: File | null;
+  storedDocument: DesilDocument | null;
   status: UploadState;
   progress: number;
   message: string;

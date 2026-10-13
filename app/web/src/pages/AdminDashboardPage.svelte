@@ -30,16 +30,16 @@
 <section class="border-b border-border-subtle bg-surface-strong py-12 md:pt-16 md:pb-14">
   <div class="page-container grid items-end gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
     <div>
-      <div class="section-kicker">Admin Dashboard</div>
-      <h1 class="page-heading">Demo monitoring pengajuan DTSEN</h1>
+      <div class="section-kicker">Dashboard Admin</div>
+      <h1 class="page-heading">Pemantauan pengajuan DTSEN</h1>
       <p class="mt-4 max-w-[70ch]">
-        Prototype dashboard admin untuk memantau pengajuan perbaikan data desil,
-        memfilter status, dan membuka detail simulasi.
+        Ringkasan status dan daftar pengajuan perbaikan data desil berdasarkan
+        nama pemohon, wilayah, dan tahap pemeriksaan.
       </p>
     </div>
     <div class="page-note">
-      <strong class="font-bold">Tanpa autentikasi</strong>
-      <span class="text-sm">Dashboard ini hanya UI prototype dan belum memiliki login atau backend.</span>
+      <strong class="font-bold">Data contoh</strong>
+      <span class="text-sm">Daftar ini belum terhubung ke pengajuan warga. Semua nama dan status merupakan data contoh.</span>
     </div>
   </div>
 </section>
@@ -73,7 +73,7 @@
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full min-w-[760px] border-collapse text-left text-sm [&_th]:sticky [&_th]:top-0 [&_th]:border-b [&_th]:border-border-subtle [&_th]:bg-surface-strong [&_th]:px-4 [&_th]:py-3.5 [&_th]:font-extrabold [&_th]:text-ink [&_td]:border-b [&_td]:border-border-subtle [&_td]:px-4 [&_td]:py-3.5">
+        <table class="w-full min-w-190 border-collapse text-left text-sm [&_th]:sticky [&_th]:top-0 [&_th]:border-b [&_th]:border-border-subtle [&_th]:bg-surface-strong [&_th]:px-4 [&_th]:py-3.5 [&_th]:font-extrabold [&_th]:text-ink [&_td]:border-b [&_td]:border-border-subtle [&_td]:px-4 [&_td]:py-3.5">
           <thead>
             <tr>
               <th>ID</th>
@@ -93,7 +93,7 @@
                 <td><span class={["inline-flex min-h-7 items-center rounded-full px-2.5 text-xs font-extrabold", submissionStatusClasses[row.status]]}>{row.status}</span></td>
                 <td>{row.date}</td>
                 <td>
-                  <button type="button" class="w-fit rounded-lg border border-bps-sky-border bg-bps-sky-light px-3.5 py-2 text-sm font-extrabold text-bps-sky-text hover:bg-bps-sky-border" onclick={() => showToast(`Membuka detail ${row.id}`)}>
+                  <button type="button" class="w-fit rounded-lg border border-bps-sky-border bg-bps-sky-light px-3.5 py-2 text-sm font-extrabold text-bps-sky-text hover:bg-bps-sky-border" onclick={() => showToast(`${row.id}: ${row.name}, ${row.desa}, ${row.kecamatan}. Status: ${row.status}. Data contoh.`)}>
                     Detail
                   </button>
                 </td>
@@ -108,9 +108,10 @@
       </div>
 
       <div class="flex flex-col gap-3 p-4 text-sm text-muted md:flex-row md:items-center md:justify-end">
-        <button type="button" class="rounded-lg border border-border-default bg-surface px-3 py-2 font-extrabold text-body">Sebelumnya</button>
-        <span>Halaman 1 dari 3</span>
-        <button type="button" class="rounded-lg border border-border-default bg-surface px-3 py-2 font-extrabold text-body">Berikutnya</button>
+        <span>Menampilkan {filteredSubmissions.length} dari {submissions.length} data contoh</span>
+        <button type="button" class="rounded-lg border border-border-default bg-surface px-3 py-2 font-extrabold text-body" disabled>Sebelumnya</button>
+        <span>Halaman 1 dari 1</span>
+        <button type="button" class="rounded-lg border border-border-default bg-surface px-3 py-2 font-extrabold text-body" disabled>Berikutnya</button>
       </div>
     </div>
   </div>

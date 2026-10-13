@@ -9,7 +9,7 @@
   "scripts": {
     "dev": "bun run --parallel dev:api dev:web",
     "dev:web": "cd app/web && bun run dev",
-    "dev:api": "bun --watch app/api/src/index.ts",
+    "dev:api": "bun run --cwd app/api dev",
     "build": "bun run --filter '@bps/*' --if-present build",
     "typecheck": "bun run --filter '@bps/*' --if-present typecheck"
   },

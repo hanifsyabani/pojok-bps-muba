@@ -1,6 +1,6 @@
 <script lang="ts">
   import { footerServiceLinks, navItems } from "../../constants/navigation";
-  import { footerContactInformation } from "../../constants/prototype";
+  import { contentSources, footerContactInformation } from "../../constants/prototype";
   import type { PageActionProps } from "../../types/components";
 
   let { navigate, showToast }: PageActionProps = $props();
@@ -22,8 +22,9 @@
         </div>
       </div>
       <p class="mt-4 max-w-[42ch] text-sm">
-        Seluruh angka, kegiatan, pengajuan, dan alur layanan
+        Portal informasi statistik dan layanan untuk masyarakat Kabupaten Musi Banyuasin.
       </p>
+      <a class="mt-3 inline-block text-sm underline underline-offset-4 hover:text-inverse" href={contentSources.website} target="_blank" rel="noopener noreferrer">Website BPS Kabupaten Musi Banyuasin</a>
     </div>
 
     <div>

@@ -3,9 +3,10 @@
   import AdminDashboardPage from "../../pages/AdminDashboardPage.svelte";
   import DesilRepairPage from "../../pages/DesilRepairPage.svelte";
   import HomePage from "../../pages/HomePage.svelte";
+  import KecamatanStatisticsPage from "../../pages/KecamatanStatisticsPage.svelte";
   import ProfilePage from "../../pages/ProfilePage.svelte";
-  import ServicesPage from "../../pages/ServicesPage.svelte";
   import StatisticsPage from "../../pages/StatisticsPage.svelte";
+  import { isKecamatanStatisticsPath } from "../../constants/maps";
   import type { NavBottomProps } from "../../types/components";
 
   let { currentPath, navigate, showToast }: NavBottomProps = $props();
@@ -16,9 +17,9 @@
     {#if currentPath === "/profil-bps"}
       <ProfilePage />
     {:else if currentPath === "/statistik-data"}
-      <StatisticsPage />
-    {:else if currentPath === "/layanan"}
-      <ServicesPage {navigate} {showToast} />
+      <StatisticsPage {navigate} />
+    {:else if isKecamatanStatisticsPath(currentPath)}
+      <KecamatanStatisticsPage {currentPath} {navigate} />
     {:else if currentPath === "/perbaikan-data-desil"}
       <DesilRepairPage {showToast} />
     {:else if currentPath === "/kegiatan"}

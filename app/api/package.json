@@ -7,11 +7,22 @@
     "dev": "bun --watch src/index.ts",
     "start": "bun src/index.ts",
     "build": "bun build src/index.ts --target=bun --outdir=dist",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "db:generate": "bunx drizzle-kit generate",
+    "db:migrate": "bun src/db/migrate.ts",
+    "storage:setup": "bun src/storage/setup.ts",
+    "test": "bun test"
   },
   "dependencies": {
     "@bps/shared": "workspace:*",
     "@elysiajs/cors": "latest",
-    "elysia": "latest"
+    "@supabase/supabase-js": "2.117.3",
+    "drizzle-orm": "0.45.4",
+    "elysia": "latest",
+    "postgres": "3.4.9",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "drizzle-kit": "0.31.11"
   }
 }

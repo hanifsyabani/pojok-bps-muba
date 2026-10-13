@@ -22,8 +22,8 @@
     <div class="w-full max-w-205 min-w-0 text-center">
       <h1 class="text-balance text-4xl leading-[1.12] font-bold sm:text-5xl lg:text-6xl xl:text-7xl">Pojok BPS <span class="text-gambo-gold">Muba</span></h1>
       <p class="mx-auto mt-4 max-w-180 text-sm text-portal-body sm:text-base lg:text-lg">
-        Satu portal untuk melihat contoh statistik daerah, layanan data,
-        kegiatan, dan form perbaikan data desil DTSEN Kabupaten Musi Banyuasin.
+        Portal statistik daerah, layanan data,
+        publikasi, dan informasi kegiatan BPS Kabupaten Musi Banyuasin.
       </p>
       
     </div>
@@ -46,7 +46,7 @@
     background-size: 82rem auto;
     filter: grayscale(1) contrast(1.6) brightness(0.65) sepia(1) saturate(1.25);
     mix-blend-mode: screen;
-    opacity: 0.45;
+    opacity: 0.12;
     mask-image: linear-gradient(90deg, black, rgb(0 0 0 / 0.8) 8%, transparent 29%, transparent 71%, rgb(0 0 0 / 0.8) 92%, black);
   }
 
@@ -66,6 +66,9 @@
         <span class="text-xs font-extrabold text-muted">{stat.helper}</span>
         <strong class="mt-2 block text-3xl leading-none font-bold text-ink">{stat.value}</strong>
         <p class="mt-2 font-bold">{stat.label}</p>
+        {#if stat.sourceUrl}
+          <a class="mt-3 inline-block text-xs font-bold text-bps-sky-text underline underline-offset-4" href={stat.sourceUrl} target="_blank" rel="noopener noreferrer">Sumber BPS</a>
+        {/if}
       </article>
     {/each}
   </div>
@@ -75,20 +78,25 @@
   <div class="page-container grid items-stretch gap-4 md:grid-cols-2 xl:grid-cols-[1.2fr_0.8fr_0.8fr]">
     <article class="grid content-start gap-4 rounded-lg border border-border-default border-t-4 border-t-bps-sky bg-surface p-5 shadow-sm">
       <div>
-        <h2 class="text-xl leading-snug font-bold text-ink">Layanan statistik dibuat lebih mudah dipindai</h2>
+        <h2 class="text-xl leading-snug font-bold text-ink">Statistik untuk memahami Musi Banyuasin</h2>
       </div>
       <p class="text-sm">
-        Beranda ini meniru rasa portal data: navigasi ringkas, pencarian cepat,
-        visual peta topik, dan akses langsung ke layanan yang paling sering dibuka.
+        Telusuri indikator kependudukan, kemiskinan, ketenagakerjaan, dan ekonomi
+        daerah sebagai referensi penelitian dan perencanaan.
       </p>
+      <a class="w-fit text-sm font-bold text-bps-sky-text underline underline-offset-4" href="/statistik-data" onclick={(event) => { event.preventDefault(); navigate("/statistik-data"); }}>Lihat statistik daerah</a>
     </article>
 
     <article class="grid content-start gap-2 rounded-lg border border-border-default border-t-4 border-t-bps-green bg-surface p-5 shadow-sm">
-      <p class="text-sm">Semua angka, status, dan kegiatan adalah dummy content untuk review UI.</p>
+      <h2 class="text-xl leading-snug font-bold text-ink">Pelayanan Statistik Terpadu</h2>
+      <p class="text-sm">Temukan informasi permintaan data, konsultasi statistik, publikasi, dan kanal pengaduan.</p>
+      <a class="w-fit text-sm font-bold text-bps-sky-text underline underline-offset-4" href="/layanan" onclick={(event) => { event.preventDefault(); navigate("/layanan"); }}>Lihat layanan</a>
     </article>
 
     <article class="grid content-start gap-2 rounded-lg border border-border-default border-t-4 border-t-bps-orange bg-surface p-5 shadow-sm">
-      <p class="text-sm">Belum ada backend, autentikasi, database, atau unggah file nyata.</p>
+      <h2 class="text-xl leading-snug font-bold text-ink">Kegiatan BPS Muba</h2>
+      <p class="text-sm">Ikuti dokumentasi kegiatan statistik, koordinasi daerah, dan pengembangan pengetahuan.</p>
+      <a class="w-fit text-sm font-bold text-bps-sky-text underline underline-offset-4" href="/kegiatan" onclick={(event) => { event.preventDefault(); navigate("/kegiatan"); }}>Lihat kegiatan</a>
     </article>
   </div>
 </section>

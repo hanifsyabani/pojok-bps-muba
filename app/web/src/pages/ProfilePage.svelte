@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { officeInformation, organizationUnits, profileHighlights } from "../constants/prototype";
+  import { contentSources, officeInformation, organizationUnits, profileHighlights } from "../constants/prototype";
 </script>
 
 <section class="border-b border-border-subtle bg-surface-strong py-12 md:pt-16 md:pb-14">
@@ -8,13 +8,13 @@
       <div class="section-kicker">Profil BPS</div>
       <h1 class="page-heading">Profil BPS Kabupaten Musi Banyuasin</h1>
       <p class="mt-4 max-w-[70ch]">
-        Halaman prototype untuk memperkenalkan identitas layanan, informasi kantor,
-        struktur kelembagaan, dan kanal pelayanan BPS Kabupaten Musi Banyuasin.
+        Kenali peran BPS dalam penyediaan data statistik, pelayanan masyarakat,
+        serta dukungan terhadap kebutuhan informasi daerah.
       </p>
     </div>
     <div class="page-note">
-      <strong class="font-bold">Bukan konten resmi</strong>
-      <span class="text-sm">Materi profil final perlu divalidasi oleh BPS Kabupaten Musi Banyuasin sebelum publikasi.</span>
+      <strong class="font-bold">Informasi kelembagaan</strong>
+      <a class="text-sm underline underline-offset-4" href={contentSources.profile} target="_blank" rel="noopener noreferrer">Profil lengkap di PPID BPS Muba</a>
     </div>
   </div>
 </section>
@@ -22,10 +22,11 @@
 <section class="bg-surface py-12 md:py-16">
   <div class="page-container grid items-start gap-8 xl:grid-cols-[0.9fr_1.1fr]">
     <div>
-      <h2 class="section-heading">Pojok BPS Muba sebagai wajah layanan digital</h2>
+      <h2 class="section-heading">Data statistik untuk pemerintah dan masyarakat</h2>
       <p class="mt-4 max-w-[70ch]">
-        Prototype ini menempatkan konten kelembagaan dan layanan statistik dalam struktur
-        yang mudah dibaca oleh masyarakat, perangkat daerah, akademisi, dan mitra kerja.
+        BPS menyelenggarakan statistik dasar dan membantu pemenuhan kebutuhan
+        data untuk penelitian, perencanaan, serta pengambilan keputusan.
+        Pelayanan Statistik Terpadu menjadi kanal akses data dan konsultasi bagi pengguna.
       </p>
     </div>
 
@@ -52,15 +53,17 @@
           </div>
         {/each}
       </dl>
+      <a class="mt-4 inline-block text-sm font-bold text-bps-sky-text underline underline-offset-4" href={contentSources.website} target="_blank" rel="noopener noreferrer">Sumber informasi kantor</a>
     </article>
 
     <article class="rounded-lg border border-border-default bg-surface p-5 shadow-sm">
-      <h2 class="mb-2 text-base font-bold text-ink">Struktur konten</h2>
+      <h2 class="mb-2 text-base font-bold text-ink">Struktur organisasi</h2>
       <div class="mt-4 grid gap-3 md:grid-cols-2 [&>span]:grid [&>span]:min-h-[46px] [&>span]:place-items-center [&>span]:rounded-lg [&>span]:border [&>span]:border-border-default [&>span]:bg-surface-strong [&>span]:p-2.5 [&>span]:text-center [&>span]:text-sm [&>span]:font-bold [&>span]:text-ink">
         {#each organizationUnits as unit}
           <span>{unit}</span>
         {/each}
       </div>
+      <a class="mt-4 inline-block text-sm font-bold text-bps-sky-text underline underline-offset-4" href={contentSources.profile} target="_blank" rel="noopener noreferrer">Lihat struktur di PPID BPS</a>
     </article>
   </div>
 </section>

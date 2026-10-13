@@ -1,20 +1,20 @@
 <script lang="ts">
-  import { activities } from "../constants/prototype";
+  import { activities, contentSources } from "../constants/prototype";
 </script>
 
 <section class="border-b border-border-subtle bg-surface-strong py-12 md:pt-16 md:pb-14">
   <div class="page-container grid items-end gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
     <div>
       <div class="section-kicker">Kegiatan</div>
-      <h1 class="page-heading">Agenda dan aktivitas BPS Muba</h1>
+      <h1 class="page-heading">Kegiatan BPS Muba</h1>
       <p class="mt-4 max-w-[70ch]">
-        Halaman contoh untuk menampilkan kegiatan, pelatihan, sosialisasi, dan
-        koordinasi statistik dalam format daftar yang mudah diperbarui.
+        Dokumentasi koordinasi daerah, pengembangan pengetahuan, dan kegiatan
+        statistik BPS Kabupaten Musi Banyuasin.
       </p>
     </div>
     <div class="page-note">
-      <strong class="font-bold">Dummy content</strong>
-      <span class="text-sm">Agenda di bawah ini dibuat untuk kebutuhan tampilan prototype.</span>
+      <strong class="font-bold">Dokumentasi kegiatan</strong>
+      <span class="text-sm">Ringkasan berikut merujuk berita BPS. Tanggal menunjukkan waktu kegiatan, bukan jadwal mendatang.</span>
     </div>
   </div>
 </section>
@@ -28,19 +28,22 @@
           <span class="mb-1.5 block text-xs font-extrabold text-muted">{activity.date} - {activity.location}</span>
           <h2 class="mb-2 text-base font-bold text-ink">{activity.title}</h2>
           <p class="text-sm">{activity.description}</p>
+          <a class="mt-3 inline-block text-sm font-bold text-bps-sky-text underline underline-offset-4" href={activity.sourceUrl} target="_blank" rel="noopener noreferrer">Baca berita di BPS Muba</a>
         </div>
       </article>
+    {:else}
+      <p class="text-muted">Belum ada dokumentasi kegiatan yang tersedia.</p>
     {/each}
   </div>
 </section>
 
 <section class="bg-base py-12 md:py-16">
   <div class="page-container grid gap-4">
-    <h2 class="section-heading">Ruang arsip kegiatan</h2>
+    <h2 class="section-heading">Berita dan kegiatan lainnya</h2>
     <p class="max-w-[70ch]">
-      State kosong ini disiapkan untuk periode ketika belum ada kegiatan terbaru
-      atau filter arsip belum menghasilkan data.
+      Telusuri berita, siaran pers, dan dokumentasi kegiatan lainnya melalui
+      kanal berita BPS Kabupaten Musi Banyuasin.
     </p>
-    <div class="rounded-lg border border-bps-orange-border bg-bps-orange-light p-4 text-sm text-bps-orange-text">Belum ada arsip yang sesuai filter contoh.</div>
+    <a class="btn-secondary" href={contentSources.news} target="_blank" rel="noopener noreferrer">Buka berita BPS Muba</a>
   </div>
 </section>

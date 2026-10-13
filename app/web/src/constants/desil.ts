@@ -1,18 +1,13 @@
 import type { DesilForm, UploadDocument, UploadItem } from "../types/desil";
 import type { SubmissionFilter } from "../types/prototype";
+import { DESIL_KECAMATAN, DESIL_UPLOAD_TYPES } from "@bps/shared";
 
-export const desilReferenceNumber = "DTSEN-2026-00124";
-export const allowedUploadTypes: string[] = ["application/pdf", "image/jpeg", "image/jpg", "image/png"];
+export const allowedUploadTypes = DESIL_UPLOAD_TYPES;
 
 export const emptyDesilForm: Readonly<DesilForm> = {
   nama: "",
-  nik: "",
-  kk: "",
-  telepon: "",
   desa: "",
-  kecamatan: "",
-  alamat: "",
-  alasan: ""
+  kecamatan: ""
 };
 
 export const uploadDocuments: UploadDocument[] = [
@@ -21,37 +16,22 @@ export const uploadDocuments: UploadDocument[] = [
   { id: "domisili", label: "Foto rumah atau bukti domisili", hint: "PDF, JPG, JPEG, atau PNG maks 5 MB" }
 ];
 
-export const emptyUploadState: Readonly<Pick<UploadItem, "file" | "status" | "progress" | "message">> = {
+export const emptyUploadState: Readonly<Pick<UploadItem, "file" | "storedDocument" | "status" | "progress" | "message">> = {
   file: null,
+  storedDocument: null,
   status: "empty",
   progress: 0,
   message: "Belum ada file"
 };
 
 export const desilProcessSteps: string[] = [
-  "Isi identitas pemohon dan wilayah domisili.",
-  "Unggah dokumen pendukung dalam format yang diizinkan.",
-  "Tinjau ringkasan data sebelum mengirim simulasi pengajuan.",
-  "Sistem menampilkan nomor pengajuan contoh."
+  "Isi nama lengkap, desa/kelurahan, dan kecamatan.",
+  "Pilih dokumen pendukung untuk pengajuan.",
+  "Konfirmasikan pengiriman pengajuan.",
+  "Kirim pengajuan dan simpan dokumen melalui layanan website."
 ];
 
-export const desilRequirements: string[] = [
-  "Identitas pemohon dan data keluarga",
-  "Alamat domisili lengkap",
-  "Dokumen pendukung berformat PDF, JPG, JPEG, atau PNG",
-  "Nomor kontak aktif untuk konfirmasi petugas"
-];
-
-export const kecamatanOptions: string[] = [
-  "Sekayu",
-  "Sungai Lilin",
-  "Bayung Lencir",
-  "Lais",
-  "Tungkal Jaya",
-  "Babat Toman",
-  "Sanga Desa",
-  "Keluang"
-];
+export const kecamatanOptions = DESIL_KECAMATAN;
 
 export const submissionStatusOptions: SubmissionFilter[] = [
   "Semua",

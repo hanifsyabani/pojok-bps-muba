@@ -11,6 +11,7 @@ export type StatisticCard = {
   value: string;
   helper: string;
   tone: Tone;
+  sourceUrl?: string;
 };
 
 export type TrendPoint = {
@@ -25,6 +26,7 @@ export type FeaturedIndicator = {
   note: string;
   trend: TrendPoint[];
   tone: Tone;
+  sourceUrl: string;
 };
 
 export type ServiceItem = {
@@ -33,6 +35,7 @@ export type ServiceItem = {
   requirements: string[];
   procedure: string;
   tone: Tone;
+  sourceUrl: string;
 };
 
 export type ActivityItem = {
@@ -41,6 +44,7 @@ export type ActivityItem = {
   location: string;
   category: string;
   description: string;
+  sourceUrl: string;
 };
 
 export type SubmissionStatus = "Menunggu" | "Disetujui" | "Perlu Perbaikan" | "Ditolak";
@@ -80,6 +84,7 @@ export type DatasetExample = {
   domain: string;
   period: string;
   status: string;
+  sourceUrl: string;
 };
 
 export type SearchItem = {

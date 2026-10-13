@@ -17,6 +17,10 @@
     navigate(path);
     mobileMenuOpen = false;
   }
+
+  function isActivePath(path: string) {
+    return currentPath === path || (path !== "/" && currentPath.startsWith(`${path}/`));
+  }
 </script>
 
 <nav class={["sticky top-0 z-50 border-b border-ink-line bg-ink text-portal-body transition-shadow", isNavbarScrolled && "shadow-md"]}>
@@ -39,9 +43,9 @@
         <span>Cari topik data</span>
         <kbd class="min-w-13.5 rounded-md border border-inverse/15 px-1.5 py-0.5 text-[0.7rem] font-bold text-portal-text">Ctrl K</kbd>
       </button>
-      <div class="hidden items-center rounded-lg border border-ink-line bg-ink-soft p-0.5 md:inline-flex" aria-label="Pilihan bahasa prototype">
+      <div class="hidden items-center rounded-lg border border-ink-line bg-ink-soft p-0.5 md:inline-flex" aria-label="Pilihan bahasa">
         <button type="button" class="min-h-8 min-w-9 rounded-md bg-bps-sky/20 text-xs font-bold text-portal-text" onclick={() => showToast("Bahasa Indonesia aktif.")}>ID</button>
-        <button type="button" class="min-h-8 min-w-9 rounded-md text-xs font-bold text-portal-muted hover:text-portal-text" onclick={() => showToast("Versi bahasa Inggris masih prototype.")}>EN</button>
+        <button type="button" class="min-h-8 min-w-9 rounded-md text-xs font-bold text-portal-muted hover:text-portal-text" onclick={() => showToast("Versi bahasa Inggris belum tersedia.")}>EN</button>
       </div>
     
       <button
@@ -64,7 +68,7 @@
             <a
               href={item.path}
               class="inline-flex min-h-9.5 items-center border-b-2 border-transparent px-3 text-sm font-bold whitespace-nowrap text-portal-muted hover:border-bps-sky hover:text-portal-text aria-[current=page]:border-bps-sky aria-[current=page]:text-portal-text"
-              aria-current={currentPath === item.path ? "page" : undefined}
+              aria-current={isActivePath(item.path) ? "page" : undefined}
               onclick={(event) => {
                 event.preventDefault();
                 handleNavClick(item.path);
@@ -85,7 +89,7 @@
         <a
           href={item.path}
           class="inline-flex min-h-11 w-full items-center rounded-lg border border-transparent px-3 text-sm font-bold text-portal-muted hover:text-portal-text aria-[current=page]:border-ink-line aria-[current=page]:bg-ink-soft aria-[current=page]:text-portal-text"
-          aria-current={currentPath === item.path ? "page" : undefined}
+          aria-current={isActivePath(item.path) ? "page" : undefined}
           onclick={(event) => {
             event.preventDefault();
             handleNavClick(item.path);

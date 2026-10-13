@@ -2,16 +2,29 @@
 
 ## Project Overview
 
-This project is a frontend prototype website for Badan Pusat Statistik (BPS)
-Kabupaten Musi Banyuasin.
+Pojok BPS Muba is an information and statistics service website for Badan Pusat
+Statistik (BPS) Kabupaten Musi Banyuasin, Sumatera Selatan.
 
-The prototype is prepared for stakeholder review before backend development.
-It should look and feel like a real institutional website, but all data must be
-dummy/mock data.
+The project has moved from prototype to website development. Build for residents,
+local government, academics, researchers, and businesses. Write content around
+their information and service needs.
 
 ## Current Phase
 
-Prototype / frontend only.
+Website development. Current implementation:
+
+- The Svelte frontend and client-side pages are available.
+- Public statistics, profile, contacts, and activity summaries reference BPS
+  sources. Local content is not automatically synchronized with those sources.
+- Service links lead to existing official BPS channels.
+- DTSEN forms use shared Zod validation and an Axios service. Elysia CRUD endpoints
+  persist applications through Drizzle into Supabase PostgreSQL and store files
+  in private Supabase Storage. Access uses a browser-session bearer credential;
+  there are no applicant accounts or integration with official DTSEN decisions.
+- The admin dashboard uses explicitly labeled sample records. Authentication and
+  management of actual applications are not connected.
+- `app/api` contains the application CRUD backend, Drizzle migrations, Storage
+  setup, and tests. Live operation requires the environment described in README.md.
 
 Focus on:
 
@@ -19,23 +32,15 @@ Focus on:
 - Responsive layout
 - Navigation
 - Interactive frontend components
-- Prototype forms
-- Prototype admin dashboard
-- Mock data
+- Forms with truthful completion states
+- Admin dashboard
+- Verified public content and clearly labeled temporary sample data
 - Loading, empty, and error states where useful
 
-Do not implement:
-
-- Backend API features
-- Database
-- Authentication
-- Authorization
-- Real file upload/storage
-- Real data submission
-- Production-only infrastructure
-
-The `app/api` package exists from the starter template. Do not expand it unless
-backend work is explicitly requested.
+Do not describe the entire website as a prototype or unfinished features as
+operational. Implement backend, database, authentication, storage, and integrations
+when the requested task includes that work. A content update alone does not
+require implementing those features.
 
 ## Current Stack
 
@@ -46,8 +51,12 @@ Follow the stack that exists in `README.md`:
 - TypeScript
 - Tailwind CSS 4 via the Vite plugin
 - Shared BPS theme tokens in `app/web/src/app.css`
+- shadcn-svelte and Bits UI components in `app/web/src/lib/components/ui`
+- Elysia API, Drizzle ORM, Supabase PostgreSQL and private Storage
+- Shared Zod schemas in `packages/shared/src/desil.ts`
+- Frontend Axios service in `app/web/src/services/`
 
-Do not migrate to SvelteKit, shadcn-svelte, or ECharts unless that
+Do not migrate to SvelteKit or replace the installed UI or chart libraries unless that
 migration is explicitly requested. Do not add dependencies for work that can be
 handled with the current stack.
 
@@ -56,10 +65,10 @@ and reusable utilities in `app/web/src/app.css`.
 
 ## Website Scope
 
-The frontend prototype should cover these sections:
+The website covers these sections:
 
 ```text
-BPS Kabupaten Musi Banyuasin
+Pojok BPS Muba
 |-- Beranda
 |-- Profil BPS
 |-- Statistik & Data
@@ -72,29 +81,36 @@ BPS Kabupaten Musi Banyuasin
 Each navigation item has a separate client-side route and page component.
 `App.svelte` owns routing state, while `nav-bottom.svelte` renders the active page.
 
-## Mock Data
+## Content And Data
 
-Centralize prototype data in:
+Centralize local content, data, and configuration in:
 
 ```text
 app/web/src/constants/
 ```
 
-Do not scatter large mock datasets directly inside Svelte components.
-Keep mock data strongly typed.
+Do not scatter large datasets directly inside Svelte components.
+Keep data strongly typed.
 Keep frontend type definitions and component props in `app/web/src/types/`.
 Mutable form state must use copies of constant templates.
 
-All numbers, submissions, kegiatan, and service examples must be treated as
-prototype data. Do not present dummy values as official BPS statistics.
+The existing `prototype.ts` filenames are legacy names, not the project phase.
 
-Use labels such as:
-
-```text
-Data contoh
-Data contoh untuk kebutuhan prototype
-Bukan statistik resmi
-```
+- Use clear, professional Indonesian directed at website users.
+- Replace presentation and UI demonstration copy with relevant institutional,
+  statistical, or service information.
+- Verify statistics, periods, units, geography, contacts, activities, organization,
+  and official service requirements against sources listed in `README.md`.
+- Show source links and reference periods for public statistics and activities.
+- Distinguish population projections from administrative population records.
+- Do not invent statistics, schedules, officials, application IDs, or service
+  guarantees. Show an unavailable state when information is missing.
+- Label remaining sample records as `Data contoh` or `Data latihan`. Removing a
+  label does not make sample data official.
+- Messages must reflect the actual outcome. A local review is not a submitted
+  application. Show success only for the action that really completed.
+- Do not claim this is the officially published institution website without
+  verified authorization.
 
 ## Color System
 
@@ -146,16 +162,25 @@ Forms should have:
 - Success states
 - Disabled/loading states
 
-For Perbaikan Data Desil, file upload must remain frontend-only:
+For the current Perbaikan Data Desil implementation:
 
-- Simulate file selection and upload progress locally.
+- Keep form state, validation, files, and service calls in
+  `app/web/src/components/dtsen/form-dtsen.svelte`; the page owns layout only.
+- Use shadcn controls with BPS theme tokens. Submit opens an AlertDialog
+  confirmation before the API request; there is no separate review step.
+- Validate documents before submission, up to 5 MB per file.
 - Allow removing a selected file.
 - Validate PDF, JPG, JPEG, and PNG.
-- Do not store files or send them to a server.
+- Confirm storage only after the API succeeds. Preserve form data on errors.
+- A database UUID identifies the stored application, not an official registration
+  or acknowledgment by an officer. Storage does not change DTSEN decile decisions.
+- Require owner credentials for application reads, updates, deletion, and downloads.
+  Keep Storage private and server secrets out of the frontend.
+- Verify official procedure and requirements before claiming institutional processing.
 
 ## Admin Dashboard
 
-The admin dashboard is a UI prototype only. It can show:
+The admin dashboard currently uses clearly labeled sample records. Maintain:
 
 - KPI cards
 - Pengajuan Desil table
@@ -163,9 +188,11 @@ The admin dashboard is a UI prototype only. It can show:
 - Status filter
 - Status badges
 - Pagination UI
-- Detail buttons that simulate interaction
+- Detail buttons with useful feedback
 
-Do not add real authentication or authorization.
+Counts and pagination must match the displayed dataset. Actual applicant data
+requires authentication, authorization, and privacy controls as part of the task
+that introduces it.
 
 ## Accessibility
 
@@ -182,27 +209,30 @@ Use semantic HTML where practical:
 
 Use buttons for actions and links for navigation. Form inputs must have visible
 labels. Do not rely only on color to communicate status.
+Charts must expose their values and units in an accessible text alternative.
 
 ## Definition of Done
 
 A frontend change is complete when:
 
-- The UI works with mock data.
+- The requested behavior works with its intended data source.
+- Public facts have verifiable sources and appropriate reporting periods.
+- Sample data and unavailable services are accurately identified.
 - It is responsive.
-- TypeScript passes.
+- TypeScript and the build pass.
 - Important empty/loading/error states are considered when relevant.
 - No unnecessary dependency is added.
-- Existing prototype flows are not unintentionally broken.
+- Existing flows and user changes are preserved.
 
 ## Most Important Rule
 
-This is a prototype for presentation to BPS Kabupaten Musi Banyuasin.
+This is website development for BPS Kabupaten Musi Banyuasin.
 
 Prioritize:
 
 ```text
-Visual quality -> User experience -> Realistic interaction -> Responsive design -> Maintainable code
+Content accuracy -> Visual quality -> User experience -> Reliable behavior -> Responsive design -> Maintainable code
 ```
 
-Do not spend time on backend infrastructure until the frontend prototype has
-been reviewed and approved.
+Develop according to the requested scope and the actual state of integrations.
+Keep documentation current as capabilities become available.
