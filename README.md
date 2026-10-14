@@ -178,6 +178,10 @@ bun run typecheck
 Deploy dari root repository dengan konfigurasi Services di `vercel.json`.
 Service `web` memakai Vite dan service `api` memakai Elysia. Route `/api` dan
 `/api/*` diarahkan ke API; `/api/health` dapat diperiksa tanpa akses database.
+Service API memakai output `dist`, sehingga Vercel menjalankan `dist/index.js`
+yang sudah menyertakan kode workspace `@bps/shared`. Menjalankan entrypoint
+`src/index.ts` secara langsung di function dapat menyebabkan
+`ERR_MODULE_NOT_FOUND` jika sumber TypeScript workspace tidak ikut dikemas.
 
 Runtime memakai `bunVersion: "1.x"` (saat ini Bun 1.3.14 di Vercel).
 Format `bun.lock` versi 2 tetap memerlukan Bun 1.4 untuk instalasi dan build
@@ -192,6 +196,27 @@ Konfigurasikan variabel server dari `app/api/.env.example` pada environment
 deployment Vercel. Setelah perubahan kode, runtime, atau environment variable,
 buat deployment baru. Jika function gagal, periksa Runtime Logs untuk request
 `/api/health`; `FUNCTION_INVOCATION_FAILED` saja tidak menunjukkan penyebabnya.
+
+#### API Sebagai Project Terpisah
+
+Untuk frontend dan API pada dua project Vercel, konfigurasi API berada di
+`app/api/vercel.json`. Atur Root Directory project API ke `app/api`, dengan
+Framework Preset Elysia, Build Command `bun run build`, dan Output Directory
+`dist`. Aktifkan **Include source files outside of the Root Directory in the
+Build Step** agar build dapat mengakses `packages/shared` dan lockfile workspace.
+Pengaturan build dan runtime pada `vercel.json` di root repository hanya berlaku
+untuk deployment dari root; konfigurasi API ini berlaku untuk project terpisah.
+
+Pada project frontend, atur `VITE_API_BASE_URL` ke URL API yang berakhiran `/api`,
+misalnya `https://pojok-bps-muba-j54g.vercel.app/api`. Pada project API, atur
+`CORS_ORIGIN` ke daftar origin frontend, dipisahkan koma tanpa path atau garis
+miring penutup, misalnya
+`http://localhost:5173,https://pojok-bps-muba.vercel.app`.
+
+Setelah push, deploy ulang project API. Pemeriksaan awal yang diharapkan adalah
+`GET /api/health` mengembalikan 200 dan `OPTIONS /api/desil` dari origin frontend
+yang diizinkan mengembalikan 204 dengan header `Access-Control-Allow-Origin`
+sesuai origin tersebut. CORS tidak dapat berjalan jika function gagal startup.
 
 ## Sumber Konten
 

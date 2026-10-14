@@ -4,7 +4,8 @@
   "services": {
     "api": {
       "root": "app/api",
-      "framework": "elysia"
+      "framework": "elysia",
+      "outputDirectory": "dist"
     },
     "web": {
       "root": "app/web",
