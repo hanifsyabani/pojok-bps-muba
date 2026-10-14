@@ -173,6 +173,23 @@ bun run build
 bun run typecheck
 ```
 
+### Deployment Vercel
+
+Deploy dari root repository dengan konfigurasi Services di `vercel.json`.
+Service `web` memakai Vite dan service `api` memakai Elysia. Route `/api` dan
+`/api/*` diarahkan ke API; `/api/health` dapat diperiksa tanpa akses database.
+
+Runtime memakai `bunVersion: "1.x"` (saat ini Bun 1.3.14 di Vercel). Jalur ini
+menghindari regresi bundler Bun 1.4.1 yang dapat menghasilkan deklarasi `Check2`
+bertabrakan saat membundel Elysia. Regresi tersebut diperbaiki pada
+[Bun 1.4.2](https://bun.com/blog/bun-v1.4.2). Build API juga mengimpor bundle yang
+dihasilkan agar kegagalan parsing atau startup terdeteksi saat build.
+
+Konfigurasikan variabel server dari `app/api/.env.example` pada environment
+deployment Vercel. Setelah perubahan kode, runtime, atau environment variable,
+buat deployment baru. Jika function gagal, periksa Runtime Logs untuk request
+`/api/health`; `FUNCTION_INVOCATION_FAILED` saja tidak menunjukkan penyebabnya.
+
 ## Sumber Konten
 
 Konten diperiksa pada 11 Oktober 2026. Periode statistik mengikuti masing-masing
