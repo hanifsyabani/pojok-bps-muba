@@ -6,6 +6,12 @@ const validForm = {
   nama: "Data latihan validasi", desa: "Desa latihan", kecamatan: "Sekayu"
 };
 
+test("root API tersedia di /api untuk Vercel rewrite", async () => {
+  const response = await app.handle(new Request("http://localhost/api"));
+  expect(response.status).toBe(200);
+  expect((await response.json()).routes.health).toBe("/api/health");
+});
+
 describe("validasi desil", () => {
   test("form hanya membutuhkan nama, desa/kelurahan, dan kecamatan", () => {
     expect(desilFormSchema.safeParse(validForm).success).toBe(true);

@@ -10,6 +10,10 @@ import { ApiError } from "./errors";
 import { desilRoutes } from "./routes/desil";
 
 const port = Number(process.env.PORT ?? 3000);
+const serviceInfo = () => ({
+  service: `${APP_NAME} API`,
+  routes: API_ROUTES
+});
 
 export const app = new Elysia()
   .use(
@@ -35,10 +39,8 @@ export const app = new Elysia()
     return { message: "Layanan belum dapat memproses permintaan. Silakan coba kembali." };
   })
   .use(desilRoutes)
-  .get("/", () => ({
-    service: `${APP_NAME} API`,
-    routes: API_ROUTES
-  }))
+  .get("/", serviceInfo)
+  .get("/api", serviceInfo)
   .get(
     API_ROUTES.health,
     (): HealthResponse => ({
