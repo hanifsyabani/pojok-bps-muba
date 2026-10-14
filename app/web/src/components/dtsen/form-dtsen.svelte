@@ -71,7 +71,7 @@
   );
   const fileError = $derived(
     submitAttempted && !filesReady
-      ? "Lengkapi tiga dokumen pendukung yang valid."
+      ? "Lengkapi dokumen."
       : "",
   );
 

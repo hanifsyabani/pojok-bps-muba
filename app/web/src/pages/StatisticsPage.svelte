@@ -1,4 +1,5 @@
 <script lang="ts">
+  import HeaderPage from "../components/common/header-page.svelte";
   import MubaMap from "../components/stats/muba-map.svelte";
   import {
     datasetExamples,
@@ -19,6 +20,11 @@
     return 24 + ((value - min) / spread) * 72;
   }
 </script>
+
+<HeaderPage
+  title="Statistik"
+  desc="Data, publikasi, dan indikator prioritas untuk Musi Banyuasin"
+/>
 
 <section class="bg-surface py-8 md:py-10">
   <MubaMap {navigate} />

@@ -4,8 +4,9 @@
   import DesilRepairPage from "../../pages/DesilRepairPage.svelte";
   import HomePage from "../../pages/HomePage.svelte";
   import KecamatanStatisticsPage from "../../pages/KecamatanStatisticsPage.svelte";
-  import ProfilePage from "../../pages/ProfilePage.svelte";
+  import LoginPage from "../../pages/LoginPage.svelte";
   import StatisticsPage from "../../pages/StatisticsPage.svelte";
+  import { loginRoute } from "../../constants/navigation";
   import { isKecamatanStatisticsPath } from "../../constants/maps";
   import type { NavBottomProps } from "../../types/components";
 
@@ -14,8 +15,8 @@
 
 <main class="overflow-hidden">
   {#key currentPath}
-    {#if currentPath === "/profil-bps"}
-      <ProfilePage />
+    {#if currentPath === loginRoute.path}
+      <LoginPage {navigate} />
     {:else if currentPath === "/statistik-data"}
       <StatisticsPage {navigate} />
     {:else if isKecamatanStatisticsPath(currentPath)}

@@ -2,10 +2,10 @@
   import { onMount } from "svelte";
   import { toast } from "svelte-sonner";
   import { Toaster } from "$lib/components/ui/sonner/index.js";
-  import SearchDialog from "./components/common/SearchDialog.svelte";
+  import SearchDialog from "./components/common/search-dialog.svelte";
   import Footer from "./components/layout/footer.svelte";
   import Navbar from "./components/layout/navbar.svelte";
-  import { navItems } from "./constants/navigation";
+  import { loginRoute, navItems } from "./constants/navigation";
   import NavBottom from "./components/layout/nav-bottom.svelte";
   import { formatCurrentDate, normalizePath } from "./lib/utils";
 
@@ -16,6 +16,7 @@
   );
   let isNavbarScrolled = $state(false);
   let searchDialogOpen = $state(false);
+  const isLoginPage = $derived(currentPath === loginRoute.path);
 
   const activePage = $derived(
     navItems.find(
@@ -52,7 +53,7 @@
     const handleShortcut = (event: KeyboardEvent) => {
       const isSearchShortcut =
         (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k";
-      if (!isSearchShortcut) return;
+      if (isLoginPage || !isSearchShortcut) return;
       event.preventDefault();
       searchDialogOpen = true;
     };
@@ -71,7 +72,7 @@
 
 <svelte:head>
   <title
-    >{currentPath === "/admin-dashboard" ? "Dashboard Admin" : activePage.label}
+    >{isLoginPage ? "Masuk admin" : currentPath === "/admin-dashboard" ? "Dashboard Admin" : activePage.label}
     - Pojok BPS Muba</title
   >
   <meta
@@ -87,16 +88,20 @@
   closeButtonAriaLabel="Tutup notifikasi"
 />
 
-<Navbar
-  {currentPath}
-  {currentDate}
-  {isNavbarScrolled}
-  bind:searchDialogOpen
-  {navigate}
-  {showToast}
-/>
+{#if !isLoginPage}
+  <Navbar
+    {currentPath}
+    {currentDate}
+    {isNavbarScrolled}
+    bind:searchDialogOpen
+    {navigate}
+    {showToast}
+  />
+{/if}
 
 <NavBottom {currentPath} {navigate} {showToast} />
 
-<Footer {navigate} {showToast} />
-<SearchDialog bind:open={searchDialogOpen} {navigate} />
+{#if !isLoginPage}
+  <Footer {navigate} />
+  <SearchDialog bind:open={searchDialogOpen} {navigate} />
+{/if}

@@ -16,7 +16,7 @@ sesuai implementasi saat ini.
 - Statistik & Data: indikator daerah, tren, serta tautan publikasi dan tabel BPS.
 - Layanan: informasi kebutuhan layanan dan akses kanal pelayanan resmi.
 - Perbaikan Data Desil DTSEN: pengisian data pemohon dan pengiriman dokumen pengajuan.
-- Kegiatan: ringkasan kegiatan yang bersumber dari berita BPS.
+- Kegiatan: kalender periode sensus dan survei, rincian tanggal, serta rujukan BPS.
 - Admin Dashboard: pencarian, filter status, dan ringkasan pengajuan.
 
 ## Kondisi Implementasi
@@ -32,6 +32,14 @@ sesuai implementasi saat ini.
   dokumennya dari form; endpoint daftar dan hapus tetap tersedia melalui API.
 - Dashboard admin masih memakai data contoh yang ditandai. Autentikasi dan
   pengelolaan pengajuan nyata belum terhubung.
+- Halaman `/login` menyediakan form email dan password tanpa pendaftaran.
+  Form memvalidasi isian secara lokal dan menampilkan status autentikasi yang
+  belum tersedia; form belum mengirim atau menyimpan kredensial.
+- Halaman Kegiatan berisi satu kalender interaktif. Jadwal disimpan lokal di
+  `app/web/src/constants/activities.ts`, bersumber dari pengumuman BPS, dan
+  ditandai dengan cakupan nasional. Kalender memakai zona waktu Asia/Jakarta,
+  navigasi bulan, pilihan tanggal, serta rincian sumber. Jadwal kunjungan khusus
+  Musi Banyuasin belum tersedia dan tidak diasumsikan dari periode nasional.
 - API menyediakan CRUD pengajuan. Penyimpanan bukan persetujuan atau perubahan
   desil DTSEN, dan belum terhubung ke sistem penetapan DTSEN atau petugas resmi.
 
@@ -183,7 +191,13 @@ indikator, bukan tahun pemeriksaan konten.
 - [Pelayanan Statistik Terpadu](https://pst.bps.go.id/) dan
   [Layanan BPS Muba](https://ppid.bps.go.id/app/konten/1606/Layanan-BPS.html):
   kanal pelayanan dan informasi standar layanan.
-- Ringkasan kegiatan memiliki tautan ke berita sumber pada setiap artikel.
+- Rujukan kalender diperiksa pada 14 Oktober 2026:
+  [Susenas Maret 2026](https://okukab.bps.go.id/id/news/2026/02/18/1021/supervisi-pendataan-susenas-maret-2026-ke-kecamatan-semidang-aji.html)
+  untuk periode nasional 1-20 Februari 2026, serta
+  [SE2026](https://yogyakarta.bps.go.id/id/news/2026/06/15/598/pendampingan-pendataan-lapangan-sensus-ekonomi-2026-kabupaten-bantul.html)
+  untuk periode pendataan lapangan nasional 15 Juni-31 Agustus 2026 yang
+  diumumkan pada sumber tersebut. Kalender tidak diperbarui otomatis dan
+  bukan jadwal kunjungan petugas lokal.
 
 ## Pedoman Pengembangan
 

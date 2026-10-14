@@ -1,5 +1,5 @@
 <script lang="ts">
-  import PortalNetwork from "../components/home/PortalNetwork.svelte";
+  import PortalNetwork from "../components/home/portal-network.svelte";
   import { portalTopics, quickStatistics } from "../constants/prototype";
   import { toneClasses } from "../constants/styles";
   import type { NavigationProps } from "../types/components";

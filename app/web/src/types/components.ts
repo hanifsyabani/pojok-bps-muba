@@ -13,6 +13,11 @@ export type ToastProps = {
 
 export type PageActionProps = NavigationProps & ToastProps;
 
+export type HeaderPageProps = {
+  title: string;
+  desc?: string;
+};
+
 export type NavbarProps = PageActionProps & {
   currentPath: string;
   currentDate: string;

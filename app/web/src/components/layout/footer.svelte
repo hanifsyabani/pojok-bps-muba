@@ -1,40 +1,41 @@
 <script lang="ts">
-  import { footerServiceLinks, navItems } from "../../constants/navigation";
-  import { contentSources, footerContactInformation } from "../../constants/prototype";
-  import type { PageActionProps } from "../../types/components";
+  import { ArrowUpRightIcon, LogInIcon } from "lucide-svelte";
+  import { footerExternalLinks, footerServiceLinks, loginRoute, navItems } from "../../constants/navigation";
+  import {  footerContactInformation } from "../../constants/prototype";
+  import type { NavigationProps } from "../../types/components";
 
-  let { navigate, showToast }: PageActionProps = $props();
+  let { navigate }: NavigationProps = $props();
 </script>
 
-<footer class="bg-ink pt-12 text-portal-body">
+<footer class="bg-ink text-portal-body">
+  <div class="border-b border-inverse/15" aria-hidden="true">
+    <div class="page-container flex items-center justify-center gap-5 py-10 opacity-20 sm:gap-7 md:py-12 lg:gap-10 lg:py-16">
+      <img src="/logo.png" alt="" class="w-16 shrink-0 brightness-0 invert sm:w-24 lg:w-36" width="661" height="512" />
+      <p class="min-w-0 text-[2rem] leading-[1.1] font-bold text-inverse sm:text-5xl lg:text-[4.5rem] xl:text-[5.25rem]">
+        Pojok BPS <span class="block sm:inline">Muba</span>
+      </p>
+    </div>
+  </div>
+
   <div
-    class="page-container grid gap-8 pb-10 md:grid-cols-2 xl:grid-cols-[1.35fr_0.8fr_0.95fr_1fr]"
+    class="page-container grid gap-x-8 gap-y-10 py-10 md:grid-cols-2 md:py-14 xl:grid-cols-[1.45fr_0.8fr_1fr_1.1fr] xl:gap-x-10 xl:py-16"
   >
     <div>
-      <div class="flex items-center gap-3">
-        <img
-          src="/logo.png"
-          alt="Logo BPS"
-          class="size-11 shrink-0 rounded-md bg-surface p-1 object-contain"
-        />
-        <div>
-          <div class="text-base font-extrabold">Pojok BPS Muba</div>
-        </div>
-      </div>
-      <p class="mt-4 max-w-[42ch] text-sm">
-        Portal informasi statistik dan layanan untuk masyarakat Kabupaten Musi Banyuasin.
+      <h2 class="text-xl leading-snug font-semibold text-inverse">Terhubung dengan BPS Muba</h2>
+      <p class="mt-4 max-w-[38ch] text-sm leading-7">
+        Temukan data, publikasi, dan konsultasi statistik untuk kebutuhan Anda di Musi Banyuasin.
       </p>
-      <a class="mt-3 inline-block text-sm underline underline-offset-4 hover:text-inverse" href={contentSources.website} target="_blank" rel="noopener noreferrer">Website BPS Kabupaten Musi Banyuasin</a>
+      
     </div>
 
-    <div>
-      <h2 class="mb-3 text-base font-extrabold">Navigasi</h2>
-      <ul class="flex flex-col items-start gap-2 text-sm">
-        {#each navItems.slice(0, 4) as item}
+    <nav aria-label="Navigasi footer">
+      <h2 class="mb-4 text-base font-semibold ">Navigasi</h2>
+      <ul class="grid gap-1 text-sm">
+        {#each navItems as item}
           <li>
             <a
               href={item.path}
-              class="text-left hover:text-inverse"
+              class="inline-flex min-h-11 items-center py-2 transition-colors hover:text-inverse focus-visible:outline-inverse"
               onclick={(event) => {
                 event.preventDefault();
                 navigate(item.path);
@@ -45,16 +46,29 @@
           </li>
         {/each}
       </ul>
-    </div>
+    </nav>
 
-    <div>
-      <h2 class="mb-3 text-base font-extrabold">Layanan</h2>
-      <ul class="flex flex-col items-start gap-2 text-sm">
+    <nav class="border-t border-inverse/15 pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-8 xl:pl-10" aria-label="Layanan footer">
+      <h2 class="mb-4 text-base font-semibold ">Layanan</h2>
+      <ul class="grid gap-1 text-sm">
+        {#each footerExternalLinks as item}
+          <li>
+            <a
+              href={item.path}
+              class="inline-flex min-h-11 items-center gap-2 py-2 transition-colors hover:text-inverse focus-visible:outline-inverse"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {item.label}
+              <ArrowUpRightIcon class="size-3.5 shrink-0 text-bps-green" aria-hidden="true" />
+            </a>
+          </li>
+        {/each}
         {#each footerServiceLinks as item}
           <li>
             <a
               href={item.path}
-              class="text-left hover:text-inverse"
+              class="inline-flex min-h-11 items-center py-2 transition-colors hover:text-inverse focus-visible:outline-inverse"
               onclick={(event) => {
                 event.preventDefault();
                 navigate(item.path);
@@ -65,19 +79,35 @@
           </li>
         {/each}
       </ul>
-    </div>
+    </nav>
 
-    <div>
-      <h2 class="mb-3 text-base font-extrabold">Kontak</h2>
-      <div class="space-y-2 text-sm">
+    <div class="border-t border-inverse/15 pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-8 xl:pl-10">
+      <h2 class="mb-5 text-base font-semibold ">Kantor BPS Muba</h2>
+      <address class="space-y-4 text-sm leading-7 not-italic">
         {#each footerContactInformation as information}
           <p>{information}</p>
         {/each}
-      </div>
+      </address>
     </div>
   </div>
 
-  <div class="border-t border-inverse/10 bg-ink-deep py-4 text-center text-sm">
-    <span>© {new Date().getFullYear()} Pojok BPS Muba</span>
+  <div class="border-t border-inverse/15">
+    <div class="page-container flex flex-col items-start justify-between gap-2 py-5 text-xs sm:flex-row sm:items-center sm:gap-6">
+      <span>&copy; {new Date().getFullYear()} Pojok BPS Muba</span>
+      <div class="flex flex-wrap items-center gap-x-6 gap-y-1">
+       
+        <a
+          class="inline-flex min-h-11 items-center gap-2 hover:text-inverse focus-visible:outline-inverse"
+          href={loginRoute.path}
+          onclick={(event) => {
+            event.preventDefault();
+            navigate(loginRoute.path);
+          }}
+        >
+          <LogInIcon class="size-4" aria-hidden="true" />
+          {loginRoute.label}
+        </a>
+      </div>
+    </div>
   </div>
 </footer>
