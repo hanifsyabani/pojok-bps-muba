@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "bun --watch src/index.ts",
     "start": "bun src/index.ts",
-    "build": "bun build src/index.ts --target=bun --outdir=dist && bun -e \"await import('./dist/index.js')\"",
+    "build": "bun build src/index.ts --target=bun --external=elysia --outdir=dist && bun -e \"await import('./dist/index.js')\"",
     "typecheck": "tsc --noEmit",
     "db:generate": "bunx drizzle-kit generate",
     "db:migrate": "bun src/db/migrate.ts",

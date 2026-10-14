@@ -179,11 +179,14 @@ Deploy dari root repository dengan konfigurasi Services di `vercel.json`.
 Service `web` memakai Vite dan service `api` memakai Elysia. Route `/api` dan
 `/api/*` diarahkan ke API; `/api/health` dapat diperiksa tanpa akses database.
 
-Runtime memakai `bunVersion: "1.x"` (saat ini Bun 1.3.14 di Vercel). Jalur ini
-menghindari regresi bundler Bun 1.4.1 yang dapat menghasilkan deklarasi `Check2`
-bertabrakan saat membundel Elysia. Regresi tersebut diperbaiki pada
-[Bun 1.4.2](https://bun.com/blog/bun-v1.4.2). Build API juga mengimpor bundle yang
-dihasilkan agar kegagalan parsing atau startup terdeteksi saat build.
+Runtime memakai `bunVersion: "1.x"` (saat ini Bun 1.3.14 di Vercel).
+Format `bun.lock` versi 2 tetap memerlukan Bun 1.4 untuk instalasi dan build
+di Vercel. Build API mengecualikan Elysia dengan `--external=elysia`; paket ini
+dimuat dari dependency saat runtime. Ini menghindari regresi bundler Bun 1.4.1
+yang dapat menghasilkan deklarasi `Check2` bertabrakan saat membundel Elysia.
+Regresi tersebut diperbaiki pada [Bun 1.4.2](https://bun.com/blog/bun-v1.4.2).
+Build API juga mengimpor bundle yang dihasilkan agar kegagalan parsing atau
+startup terdeteksi saat build.
 
 Konfigurasikan variabel server dari `app/api/.env.example` pada environment
 deployment Vercel. Setelah perubahan kode, runtime, atau environment variable,
