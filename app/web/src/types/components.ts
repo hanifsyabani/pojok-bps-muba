@@ -18,6 +18,10 @@ export type HeaderPageProps = {
   desc?: string;
 };
 
+export type LoadingIndicatorProps = {
+  label: string;
+};
+
 export type NavbarProps = PageActionProps & {
   currentPath: string;
   currentDate: string;

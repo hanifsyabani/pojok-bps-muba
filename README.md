@@ -35,6 +35,16 @@ sesuai implementasi saat ini.
 - Halaman `/login` menyediakan form email dan password tanpa pendaftaran.
   Form memvalidasi isian secara lokal dan menampilkan status autentikasi yang
   belum tersedia; form belum mengirim atau menyimpan kredensial.
+- Statistik per kecamatan menampilkan dashboard ECharts dari workbook lokal
+  `app/web/public/Data KCDA 2026.xlsx`. Semua 38 sheet tersedia pada 15 halaman
+  kecamatan, dilengkapi pencarian, filter topik, pilihan tabel/periode/indikator,
+  tabel nilai, dan unduhan sumber. Daftar singkatan disajikan sebagai referensi;
+  sheet 1.1 dan 1.2 mengikuti catatan sumber bahwa datanya tidak digunakan.
+  Layout dikelompokkan per topik dengan navigasi samping, grafik utama lebar,
+  panel komposisi, dan direktori berbentuk tabel. Visualisasi memakai kolom,
+  batang horizontal, donut untuk komposisi lengkap, tren garis/area pertanian,
+  dan peta warna akses pendidikan. Nilai kosong tidak disambungkan pada tren;
+  pilihan Per kategori tetap menyediakan seluruh jenis tanaman per tahun.
 - Halaman Kegiatan berisi satu kalender interaktif. Jadwal disimpan lokal di
   `app/web/src/constants/activities.ts`, bersumber dari pengumuman BPS, dan
   ditandai dengan cakupan nasional. Kalender memakai zona waktu Asia/Jakarta,
@@ -93,6 +103,34 @@ Notifikasi global memakai Sonner melalui `Toaster` di `App.svelte`. Pemanggilan
 `showToast` yang sudah ada tetap tersedia dan kini menggunakan `svelte-sonner`.
 
 ## Perintah
+
+### Memperbarui Data Dashboard Kecamatan
+
+Workbook sumber berada di `app/web/public/Data KCDA 2026.xlsx`. Dashboard memakai
+hasil ekstraksi per kecamatan dalam `app/web/src/constants/kcda/`, yang dimuat
+sesuai halaman. Setelah mengganti atau memperbaiki workbook, jalankan importir
+sebelum build (Python 3, tanpa paket tambahan):
+
+```bash
+python scripts/import-kcda.py
+bun test scripts/statistics.test.ts
+```
+
+Importir mempertahankan periode, nilai nol, penanda kosong, dan sumber pada tiap
+sheet. Tabel utama, rincian madrasah, dan riwayat pendidikan dipisahkan agar
+angka berulang tidak dijumlahkan. Satuan pohon, tangkai, dan luas dipisahkan.
+Angka pecahan pada jumlah orang tetap terlihat di tabel sebagai nilai yang perlu
+verifikasi dan tidak digrafikkan; importir tidak menebak pemisah ribuan pada sel
+numerik Excel. Nama kepala desa yang diberi sorotan kuning dikecualikan sesuai
+catatan PJ/PLT pada sumber.
+
+Penduduk administrasi pada sheet 3.1 bersumber dari DKB Dukcapil Semester I 2026,
+sedangkan sheet 3.2 memuat proyeksi penduduk BPS. Kedua basis data disajikan
+terpisah. Periode mengikuti blok dan kolom sumber, termasuk data pertanian 2021
+di luar rentang pada judul sheet. Tidak ada sinkronisasi otomatis atau klaim
+bahwa workbook ini merupakan publikasi resmi yang telah disahkan.
+
+### Menjalankan Website
 
 ```bash
 bun install

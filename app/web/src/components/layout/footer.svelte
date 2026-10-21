@@ -23,7 +23,7 @@
     <div>
       <h2 class="text-xl leading-snug font-semibold text-inverse">Terhubung dengan BPS Muba</h2>
       <p class="mt-4 max-w-[38ch] text-sm leading-7">
-        Temukan data, publikasi, dan konsultasi statistik untuk kebutuhan Anda di Musi Banyuasin.
+        Temukan data, publikasi, statistik  di Musi Banyuasin.
       </p>
       
     </div>
@@ -60,7 +60,6 @@
               rel="noopener noreferrer"
             >
               {item.label}
-              <ArrowUpRightIcon class="size-3.5 shrink-0 text-bps-green" aria-hidden="true" />
             </a>
           </li>
         {/each}

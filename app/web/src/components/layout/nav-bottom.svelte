@@ -13,7 +13,7 @@
   let { currentPath, navigate, showToast }: NavBottomProps = $props();
 </script>
 
-<main class="overflow-hidden">
+<main class="overflow-x-clip">
   {#key currentPath}
     {#if currentPath === loginRoute.path}
       <LoginPage {navigate} />

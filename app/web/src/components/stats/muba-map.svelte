@@ -8,6 +8,7 @@
   import { MapChart } from "echarts/charts";
   import { TooltipComponent } from "echarts/components";
   import { CanvasRenderer } from "echarts/renderers";
+  import LoadingIndicator from "../common/loader.svelte";
   import {
     formatKecamatanName,
     getKecamatanRouteByGeoName,
@@ -116,7 +117,14 @@
                 emphasis: { itemStyle: { areaColor: color(route.colorToken) } }
               })),
               label: {
-                show: false
+                show: true,
+                formatter: (params: MapEventParams) => formatKecamatanName(params.name ?? "").replace(/ /g, "\n"),
+                color: color("--color-ink"),
+                fontSize: 11,
+                fontWeight: 600,
+                lineHeight: 13,
+                textBorderColor: color("--color-surface"),
+                textBorderWidth: 3
               },
               itemStyle: {
                 borderColor: color("--color-surface"),
@@ -124,13 +132,14 @@
               },
               emphasis: {
                 focus: "self",
-                label: { show: false },
+                label: { show: true },
                 itemStyle: {
                   borderColor: color("--color-ink"),
                   borderWidth: 2
                 }
               },
               blur: {
+                label: { show: true, opacity: 1 },
                 itemStyle: { opacity: 0.55 }
               }
             }
@@ -167,11 +176,12 @@
     <span class="shrink-0 text-xs font-semibold text-muted tabular-nums">{mubaKecamatanRoutes.length} kecamatan</span>
   </div>
 
-  <div class="relative mt-5 h-95 overflow-hidden rounded-md bg-base sm:h-115 lg:h-135">
+  <p class="mt-3 text-xs text-muted sm:hidden">Geser peta ke samping untuk melihat seluruh kecamatan.</p>
+  <div class="relative mt-5 h-135 overflow-x-auto overflow-y-hidden rounded-md bg-base sm:h-115 lg:h-135">
     <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions (This map implements arrow-key selection and Enter navigation.) -->
     <div
       bind:this={mapElement}
-      class="absolute inset-0 focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-bps-sky"
+      class="h-full min-w-140 focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-bps-sky"
       role="application"
       tabindex="0"
       aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Enter Escape"
@@ -183,7 +193,9 @@
     ></div>
 
     {#if mapStatus === "loading"}
-      <div class="absolute inset-0 grid place-items-center bg-base text-sm font-bold text-muted" role="status">Memuat peta kecamatan...</div>
+      <div class="absolute inset-0 grid place-items-center bg-base">
+        <LoadingIndicator label="Memuat peta kecamatan..." />
+      </div>
     {:else if mapStatus === "error"}
       <div class="absolute inset-0 grid place-items-center bg-bps-orange-light p-5 text-center text-sm font-bold text-bps-orange-text" role="status">
         Peta belum dapat dimuat. Periksa berkas GeoJSON di folder public/maps.
