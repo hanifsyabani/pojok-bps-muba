@@ -45,6 +45,12 @@ sesuai implementasi saat ini.
   batang horizontal, donut untuk komposisi lengkap, tren garis/area pertanian,
   dan peta warna akses pendidikan. Nilai kosong tidak disambungkan pada tren;
   pilihan Per kategori tetap menyediakan seluruh jenis tanaman per tahun.
+- Halaman Statistik & Data menampilkan ringkasan KCDA, peta interaktif, dan
+  daftar kecamatan dengan pencarian. Sorotan peta dan daftar saling terhubung.
+  Ringkasan penduduk administrasi (DKB Dukcapil Semester I 2026), desa/kelurahan,
+  dan SLS terkecil (2025) berasal dari agregasi seluruh kecamatan, disertai
+  periode dan unduhan workbook sumber. Luas wilayah tidak digunakan karena
+  sheet sumber ditandai tidak digunakan.
 - Halaman Kegiatan berisi satu kalender interaktif. Jadwal disimpan lokal di
   `app/web/src/constants/activities.ts`, bersumber dari pengumuman BPS, dan
   ditandai dengan cakupan nasional. Kalender memakai zona waktu Asia/Jakarta,
@@ -108,7 +114,10 @@ Notifikasi global memakai Sonner melalui `Toaster` di `App.svelte`. Pemanggilan
 
 Workbook sumber berada di `app/web/public/Data KCDA 2026.xlsx`. Dashboard memakai
 hasil ekstraksi per kecamatan dalam `app/web/src/constants/kcda/`, yang dimuat
-sesuai halaman. Setelah mengganti atau memperbaiki workbook, jalankan importir
+sesuai halaman. Importir juga menghasilkan `app/web/src/constants/kcda-overview.json`
+untuk ringkasan umum, tanpa memuat seluruh tabel kecamatan di halaman peta.
+Konfigurasi tampilannya berada di `app/web/src/constants/statistics-overview.ts`.
+Setelah mengganti atau memperbaiki workbook, jalankan importir
 sebelum build (Python 3, tanpa paket tambahan):
 
 ```bash

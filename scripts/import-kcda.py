@@ -304,6 +304,10 @@ if __name__ == "__main__":
         assert len(keys) == len(set(keys)), f"Duplicate rows in {sheet['id']}"
         assert all(len(r["values"]) == len(sheet["columns"]) for r in sheet["rows"]), sheet["id"]
     OUTPUT.mkdir(exist_ok=True)
+    overview = {"workbook": data["workbook"], "sha256": data["sha256"],
+                "periods": {"population": "2026", "villages": "2025", "sls": "2025"},
+                "sources": {sheet["id"]: sheet["sources"] for sheet in data["sheets"]
+                            if sheet["id"] in ("3.1", "2.2.3", "2.1.1")}, "districts": []}
     for district in DISTRICTS.values():
         local = {**data, "district": district, "sheets": [
             {**sheet, "rows": [{k: v for k, v in row.items() if k != "district"}
@@ -311,4 +315,18 @@ if __name__ == "__main__":
             for sheet in data["sheets"]
         ]}
         (OUTPUT / f"{district}.json").write_text(json.dumps(local, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
+        def rows_for(sheet_id, metric):
+            return [row for sheet in local["sheets"] if sheet["id"] == sheet_id
+                    for row in sheet["rows"] if row["period"] == overview["periods"][metric]]
+
+        def total(sheet_id, metric, column):
+            values = [row["values"][column] for row in rows_for(sheet_id, metric)]
+            return sum(values) if values and all(isinstance(value, (int, float)) and
+                                                value >= 0 and float(value).is_integer() for value in values) else None
+
+        villages = rows_for("2.2.3", "villages")
+        overview["districts"].append(dict(slug=district, population=total("3.1", "population", 2),
+                                         villages=len(villages) if villages else None,
+                                         sls=total("2.1.1", "sls", 1)))
+    (OUTPUT.parent / "kcda-overview.json").write_text(json.dumps(overview, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Imported {len(data['sheets'])} sheets, {sum(len(s['rows']) for s in data['sheets'])} rows for {len(DISTRICTS)} districts to {OUTPUT.relative_to(ROOT)}")

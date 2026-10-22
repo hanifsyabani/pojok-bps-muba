@@ -1,0 +1,113 @@
+{
+  "workbook": "Data KCDA 2026.xlsx",
+  "sha256": "52d627879a616adc112fa78cbe1523f76ee47920dac2a685d00784fb1fdb719d",
+  "periods": {
+    "population": "2026",
+    "villages": "2025",
+    "sls": "2025"
+  },
+  "sources": {
+    "2.1.1": [
+      "Sumber/Source: BPS, Master File Desa 2025/BPS-Statistics Indonesia, Village File Master 2025"
+    ],
+    "2.2.3": [
+      "Sumber/Source: BPS, Master File Desa 2025/BPS-Statistics Indonesia, Village File Master 2025"
+    ],
+    "3.1": [
+      "Sumber/Source : Dinas Kependudukan dan Pencatatan Sipil Kabupaten Musi Banyuasin/Department of Population and Civil Registration of Musi Banyuasin Regency",
+      "Sumber : Data Konsolidasi Bersih (DKB) Kab. Musi Banyuasin Semester I Tahun 2026 (Data Diolah)"
+    ]
+  },
+  "districts": [
+    {
+      "slug": "sanga-desa",
+      "population": 38682,
+      "villages": 19,
+      "sls": 106
+    },
+    {
+      "slug": "babat-toman",
+      "population": 45465,
+      "villages": 14,
+      "sls": 182
+    },
+    {
+      "slug": "batanghari-leko",
+      "population": 27024,
+      "villages": 16,
+      "sls": 97
+    },
+    {
+      "slug": "plakat-tinggi",
+      "population": 31766,
+      "villages": 15,
+      "sls": 169
+    },
+    {
+      "slug": "lawang-wetan",
+      "population": 30941,
+      "villages": 15,
+      "sls": 178
+    },
+    {
+      "slug": "sungai-keruh",
+      "population": 27366,
+      "villages": 10,
+      "sls": 198
+    },
+    {
+      "slug": "jirak-jaya",
+      "population": 23432,
+      "villages": 12,
+      "sls": 161
+    },
+    {
+      "slug": "sekayu",
+      "population": 106933,
+      "villages": 14,
+      "sls": 271
+    },
+    {
+      "slug": "lais",
+      "population": 60234,
+      "villages": 16,
+      "sls": 114
+    },
+    {
+      "slug": "sungai-lilin",
+      "population": 73310,
+      "villages": 15,
+      "sls": 330
+    },
+    {
+      "slug": "keluang",
+      "population": 39214,
+      "villages": 14,
+      "sls": 173
+    },
+    {
+      "slug": "babat-supat",
+      "population": 43257,
+      "villages": 16,
+      "sls": 256
+    },
+    {
+      "slug": "bayung-lencir",
+      "population": 107710,
+      "villages": 23,
+      "sls": 433
+    },
+    {
+      "slug": "lalan",
+      "population": 47549,
+      "villages": 27,
+      "sls": 457
+    },
+    {
+      "slug": "tungkal-jaya",
+      "population": 63797,
+      "villages": 16,
+      "sls": 328
+    }
+  ]
+}

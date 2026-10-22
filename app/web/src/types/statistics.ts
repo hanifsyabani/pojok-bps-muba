@@ -30,6 +30,14 @@ export type StatisticsWorkbook = {
   sheets: StatisticsSheet[];
 };
 
+export type StatisticsOverview = {
+  workbook: string;
+  sha256: string;
+  periods: { population: string; villages: string; sls: string };
+  sources: Record<string, string[]>;
+  districts: { slug: string; population: number | null; villages: number | null; sls: number | null }[];
+};
+
 export type StatisticsChartModel = {
   title: string;
   labels: string[];

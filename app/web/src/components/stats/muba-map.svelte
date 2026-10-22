@@ -16,6 +16,7 @@
     mubaMapGeoJsonPath,
     mubaMapName
   } from "../../constants/maps";
+  import { statisticsDistricts, statisticsOverview } from "../../constants/statistics-overview";
   import type { MubaMapProps } from "../../types/components";
 
   type KecamatanGeoJson = {
@@ -26,19 +27,28 @@
     name?: string;
   };
 
-  let { navigate }: MubaMapProps = $props();
+  let { navigate, activeKecamatan = $bindable(null) }: MubaMapProps = $props();
   let mapElement: HTMLDivElement;
   let mapStatus = $state<"loading" | "ready" | "error">("loading");
   let chart: ReturnType<typeof echarts.init> | null = null;
-  let focusedKecamatanIndex = $state(-1);
+  const focusedKecamatanIndex = $derived(mubaKecamatanRoutes.findIndex((route) => route.geoName === activeKecamatan));
 
   echarts.use([MapChart, TooltipComponent, CanvasRenderer]);
 
   function clearMapFocus() {
-    chart?.dispatchAction({ type: "downplay", seriesIndex: 0 });
-    chart?.dispatchAction({ type: "hideTip" });
-    focusedKecamatanIndex = -1;
+    activeKecamatan = null;
   }
+
+  $effect(() => {
+    if (mapStatus !== "ready" || !chart) return;
+    chart.dispatchAction({ type: "downplay", seriesIndex: 0 });
+    if (focusedKecamatanIndex >= 0) {
+      chart.dispatchAction({ type: "highlight", seriesIndex: 0, dataIndex: focusedKecamatanIndex });
+      chart.dispatchAction({ type: "showTip", seriesIndex: 0, dataIndex: focusedKecamatanIndex });
+    } else {
+      chart.dispatchAction({ type: "hideTip" });
+    }
+  });
 
   function handleMapKeydown(event: KeyboardEvent) {
     if (mapStatus !== "ready" || !chart) return;
@@ -57,10 +67,7 @@
     event.preventDefault();
     const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
     const nextIndex = focusedKecamatanIndex < 0 ? (direction === 1 ? 0 : -1) : focusedKecamatanIndex + direction;
-    focusedKecamatanIndex = (nextIndex + mubaKecamatanRoutes.length) % mubaKecamatanRoutes.length;
-    chart.dispatchAction({ type: "downplay", seriesIndex: 0 });
-    chart.dispatchAction({ type: "highlight", seriesIndex: 0, dataIndex: focusedKecamatanIndex });
-    chart.dispatchAction({ type: "showTip", seriesIndex: 0, dataIndex: focusedKecamatanIndex });
+    activeKecamatan = mubaKecamatanRoutes[(nextIndex + mubaKecamatanRoutes.length) % mubaKecamatanRoutes.length].geoName;
   }
 
   onMount(() => {
@@ -96,8 +103,9 @@
             textStyle: { color: color("--color-ink"), fontSize: 12 },
             extraCssText: "border-radius: 6px; line-height: 1.6; white-space: normal; letter-spacing: 0;",
             formatter: (params: MapEventParams) => {
-              const name = formatKecamatanName(params.name ?? "");
-              return `<strong>Kecamatan ${name}</strong>`;
+              const district = statisticsDistricts.find((route) => route.geoName === params.name);
+              if (!district) return "";
+              return `<strong>Kecamatan ${district.name}</strong><br>${district.villages === null ? "Jumlah desa/kelurahan belum tersedia" : `${district.villages} desa/kelurahan (${statisticsOverview.periods.villages})`}<br>Klik untuk melihat statistik`;
             }
           },
           series: [
@@ -109,7 +117,7 @@
               roam: false,
               cursor: "pointer",
               layoutCenter: ["50%", "50%"],
-              layoutSize: "92%",
+              layoutSize: "94%",
               data: mubaKecamatanRoutes.map((route) => ({
                 name: route.geoName,
                 value: 1,
@@ -118,9 +126,13 @@
               })),
               label: {
                 show: true,
-                formatter: (params: MapEventParams) => formatKecamatanName(params.name ?? "").replace(/ /g, "\n"),
+                formatter: (params: MapEventParams) => {
+                  const name = formatKecamatanName(params.name ?? "");
+                  const words = name.split(" ");
+                  return words.length > 1 ? `${words.slice(0, -1).join(" ")}\n${words.at(-1)}` : name;
+                },
                 color: color("--color-ink"),
-                fontSize: 11,
+                fontSize: mapElement.clientWidth < 400 ? 9 : 11,
                 fontWeight: 600,
                 lineHeight: 13,
                 textBorderColor: color("--color-surface"),
@@ -150,8 +162,15 @@
           const route = getKecamatanRouteByGeoName(params.name ?? "");
           if (route) navigate(route.path);
         });
+        chart.on("mouseover", (params: MapEventParams) => {
+          activeKecamatan = getKecamatanRouteByGeoName(params.name ?? "")?.geoName ?? null;
+        });
+        chart.on("mouseout", clearMapFocus);
 
-        resizeObserver = new ResizeObserver(() => chart?.resize());
+        resizeObserver = new ResizeObserver(() => {
+          chart?.resize();
+          chart?.setOption({ series: [{ label: { fontSize: mapElement.clientWidth < 400 ? 9 : 11 } }] });
+        });
         resizeObserver.observe(mapElement);
         mapStatus = "ready";
       } catch {
@@ -170,21 +189,17 @@
   });
 </script>
 
-<div class="page-container">
-  <div class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-border-default pb-4">
-    <h2 class="text-lg font-bold leading-snug text-ink md:text-xl">Peta Kecamatan Musi Banyuasin</h2>
-    <span class="shrink-0 text-xs font-semibold text-muted tabular-nums">{mubaKecamatanRoutes.length} kecamatan</span>
-  </div>
-
-  <p class="mt-3 text-xs text-muted sm:hidden">Geser peta ke samping untuk melihat seluruh kecamatan.</p>
-  <div class="relative mt-5 h-135 overflow-x-auto overflow-y-hidden rounded-md bg-base sm:h-115 lg:h-135">
+  <p id="map-scroll-hint" class="px-3 py-2 text-xs text-muted sm:hidden">Geser peta ke samping untuk melihat seluruh wilayah.</p>
+  <div class="relative h-120 overflow-x-auto overflow-y-hidden rounded-lg bg-bps-sky-light/45 sm:h-160 lg:h-206">
+    
     <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions (This map implements arrow-key selection and Enter navigation.) -->
     <div
       bind:this={mapElement}
-      class="h-full min-w-140 focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-bps-sky"
+      class="h-full w-full min-w-140 focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-bps-sky sm:min-w-0"
       role="application"
       tabindex="0"
       aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Enter Escape"
+      aria-describedby="map-scroll-hint"
       aria-label={focusedKecamatanIndex >= 0
         ? `Kecamatan ${mubaKecamatanRoutes[focusedKecamatanIndex].name}`
         : `Peta kecamatan Kabupaten Musi Banyuasin: ${mubaKecamatanRoutes.map((route) => route.name).join(", ")}. Gunakan tombol panah untuk memilih kecamatan, Enter untuk membuka halaman, dan Escape untuk menutup tooltip.`}
@@ -197,10 +212,9 @@
         <LoadingIndicator label="Memuat peta kecamatan..." />
       </div>
     {:else if mapStatus === "error"}
-      <div class="absolute inset-0 grid place-items-center bg-bps-orange-light p-5 text-center text-sm font-bold text-bps-orange-text" role="status">
-        Peta belum dapat dimuat. Periksa berkas GeoJSON di folder public/maps.
+      <div class="absolute inset-0 grid content-center justify-items-center gap-3 bg-bps-orange-light p-5 text-center" role="status">
+        <p class="text-sm font-semibold text-ink">Peta belum dapat dimuat</p>
+        <p class="max-w-xs text-xs leading-relaxed text-body">Anda tetap dapat membuka statistik melalui daftar kecamatan. Muat ulang halaman untuk mencoba memuat peta kembali.</p>
       </div>
     {/if}
   </div>
-
-</div>

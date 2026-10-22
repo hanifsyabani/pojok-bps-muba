@@ -3,11 +3,25 @@ import { createHash } from "node:crypto";
 import { readdir } from "node:fs/promises";
 import { buildAccessHeatmap, buildStatisticsChart, buildStatisticsTrend, canShowComposition, getKecamatanSummary, getSheetRows, getStatisticsTrendRows } from "../app/web/src/lib/statistics";
 import type { StatisticsWorkbook } from "../app/web/src/types/statistics";
+import { statisticsDistricts, statisticsOverview, statisticsOverviewCards } from "../app/web/src/constants/statistics-overview";
 
 const directory = new URL("../app/web/src/constants/kcda/", import.meta.url);
 const files = (await readdir(directory)).filter((file) => file.endsWith(".json"));
 const workbooks: StatisticsWorkbook[] = await Promise.all(files.map((file) => Bun.file(new URL(file, directory)).json()));
 const sanga = workbooks.find((book) => book.district === "sanga-desa")!;
+
+test("the general statistics and village list match all KCDA district sheets", () => {
+  expect(statisticsOverview.districts).toHaveLength(workbooks.length);
+  expect(new Set(statisticsOverview.districts.map((district) => district.slug)).size).toBe(workbooks.length);
+  for (const book of workbooks) {
+    expect(statisticsOverview.sha256).toBe(book.sha256);
+    const summary = getKecamatanSummary(book.sheets);
+    expect(statisticsOverview.districts.find((district) => district.slug === book.district)).toEqual({ slug: book.district, ...summary });
+    expect(statisticsDistricts.find((district) => district.slug === book.district)?.villages).toBe(summary.villages);
+  }
+  expect(statisticsOverviewCards.find((card) => card.id === "population")?.value).toBe(766680);
+  expect(statisticsOverviewCards.find((card) => card.id === "villages")?.value).toBe(242);
+});
 
 test("all 15 districts cover all 38 sheets and match the source workbook", async () => {
   const hash = createHash("sha256").update(await Bun.file(new URL("../app/web/public/Data KCDA 2026.xlsx", import.meta.url)).bytes()).digest("hex");
