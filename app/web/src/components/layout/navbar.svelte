@@ -32,10 +32,8 @@
     isNavbarScrolled && "shadow-md",
   ]}
 >
-  <div class="max-w-7xl  mx-auto">
-    <div
-      class=" flex min-h-17 items-center justify-between gap-4 md:min-h-16"
-    >
+  <div class="max-w-7xl mx-auto">
+    <div class=" flex min-h-17 items-center justify-between gap-4 md:min-h-16 px-4 lg:px-0">
       <button
         type="button"
         class="inline-flex min-w-0 items-center gap-3 text-left text-inverse"
@@ -47,9 +45,7 @@
           class="size-11 shrink-0 rounded-md bg-surface p-1 object-contain"
         />
         <span class="grid min-w-0 leading-[1.15]">
-          <strong class="text-base font-extrabold md:text-lg"
-            >Betandang</strong
-          >
+          <strong class="text-base font-extrabold md:text-lg">Betandang</strong>
           <small class="mt-1 text-[0.68rem] text-portal-muted md:text-xs"
             >BPS Kabupaten Musi Banyuasin</small
           >
@@ -88,12 +84,21 @@
 
         <button
           type="button"
-          class="inline-flex min-h-10 items-center rounded-lg border border-bps-sky bg-bps-sky px-3.5 text-sm font-extrabold text-inverse xl:hidden"
           onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
           aria-label="Buka menu"
           aria-expanded={mobileMenuOpen}
         >
-          Menu
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            viewBox="0 0 24 24"
+            class="size-6"
+            ><title>menu-3-line</title><path
+              fill="currentColor"
+              d="M3 4h18v2H3zm6 7h12v2H9zm-6 7h18v2H3z"
+            /></svg
+          >
         </button>
       </div>
     </div>
