@@ -1,7 +1,7 @@
 <script lang="ts">
   import PortalNetwork from "../components/home/portal-network.svelte";
-  import { portalTopics, quickStatistics } from "../constants/prototype";
-  import { toneClasses } from "../constants/styles";
+  import HomeContent from "../components/home/home-content.svelte";
+  import { portalTopics } from "../constants/prototype";
   import type { NavigationProps } from "../types/components";
 
   let { navigate }: NavigationProps = $props();
@@ -20,10 +20,9 @@
   </div>
   <div class="page-container relative z-1 grid justify-items-center gap-8 lg:gap-5">
     <div class="w-full max-w-205 min-w-0 text-center">
-      <h1 class="text-balance text-4xl leading-[1.12] font-bold sm:text-5xl lg:text-6xl xl:text-7xl">Pojok BPS <span class="text-gambo-gold">Muba</span></h1>
+      <h1 class="text-balance text-4xl leading-[1.12] font-bold sm:text-5xl lg:text-6xl xl:text-7xl">Betan<span class="text-gambo-gold">dang</span></h1>
       <p class="mx-auto mt-4 max-w-180 text-sm text-portal-body sm:text-base lg:text-lg">
-        Portal statistik daerah, layanan data,
-        publikasi, dan informasi kegiatan BPS Kabupaten Musi Banyuasin.
+        Beranda Terpadu Data dan Informasi Statistik
       </p>
       
     </div>
@@ -59,44 +58,5 @@
   }
 </style>
 
-<section class="border-y border-border-subtle bg-base py-6" aria-label="Statistik cepat">
-  <div class="page-container grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-    {#each quickStatistics as stat}
-      <article class={["rounded-lg border border-border-default border-t-4 border-t-(--tone-color) bg-surface p-5 shadow-sm", toneClasses[stat.tone]]}>
-        <span class="text-xs font-extrabold text-muted">{stat.helper}</span>
-        <strong class="mt-2 block text-3xl leading-none font-bold text-ink">{stat.value}</strong>
-        <p class="mt-2 font-bold">{stat.label}</p>
-        {#if stat.sourceUrl}
-          <a class="mt-3 inline-block text-xs font-bold text-bps-sky-text underline underline-offset-4" href={stat.sourceUrl} target="_blank" rel="noopener noreferrer">Sumber BPS</a>
-        {/if}
-      </article>
-    {/each}
-  </div>
-</section>
 
-<section class="bg-surface py-12 md:py-16">
-  <div class="page-container grid items-stretch gap-4 md:grid-cols-2 xl:grid-cols-[1.2fr_0.8fr_0.8fr]">
-    <article class="grid content-start gap-4 rounded-lg border border-border-default border-t-4 border-t-bps-sky bg-surface p-5 shadow-sm">
-      <div>
-        <h2 class="text-xl leading-snug font-bold text-ink">Statistik untuk memahami Musi Banyuasin</h2>
-      </div>
-      <p class="text-sm">
-        Telusuri indikator kependudukan, kemiskinan, ketenagakerjaan, dan ekonomi
-        daerah sebagai referensi penelitian dan perencanaan.
-      </p>
-      <a class="w-fit text-sm font-bold text-bps-sky-text underline underline-offset-4" href="/statistik-data" onclick={(event) => { event.preventDefault(); navigate("/statistik-data"); }}>Lihat statistik daerah</a>
-    </article>
-
-    <article class="grid content-start gap-2 rounded-lg border border-border-default border-t-4 border-t-bps-green bg-surface p-5 shadow-sm">
-      <h2 class="text-xl leading-snug font-bold text-ink">Pelayanan Statistik Terpadu</h2>
-      <p class="text-sm">Temukan informasi permintaan data, konsultasi statistik, publikasi, dan kanal pengaduan.</p>
-      <a class="w-fit text-sm font-bold text-bps-sky-text underline underline-offset-4" href="/layanan" onclick={(event) => { event.preventDefault(); navigate("/layanan"); }}>Lihat layanan</a>
-    </article>
-
-    <article class="grid content-start gap-2 rounded-lg border border-border-default border-t-4 border-t-bps-orange bg-surface p-5 shadow-sm">
-      <h2 class="text-xl leading-snug font-bold text-ink">Kegiatan BPS Muba</h2>
-      <p class="text-sm">Ikuti dokumentasi kegiatan statistik, koordinasi daerah, dan pengembangan pengetahuan.</p>
-      <a class="w-fit text-sm font-bold text-bps-sky-text underline underline-offset-4" href="/kegiatan" onclick={(event) => { event.preventDefault(); navigate("/kegiatan"); }}>Lihat kegiatan</a>
-    </article>
-  </div>
-</section>
+<HomeContent {navigate} />

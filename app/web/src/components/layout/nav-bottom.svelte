@@ -4,20 +4,17 @@
   import DesilRepairPage from "../../pages/DesilRepairPage.svelte";
   import HomePage from "../../pages/HomePage.svelte";
   import KecamatanStatisticsPage from "../../pages/KecamatanStatisticsPage.svelte";
-  import LoginPage from "../../pages/LoginPage.svelte";
   import StatisticsPage from "../../pages/StatisticsPage.svelte";
-  import { loginRoute } from "../../constants/navigation";
   import { isKecamatanStatisticsPath } from "../../constants/maps";
   import type { NavBottomProps } from "../../types/components";
 
   let { currentPath, navigate, showToast }: NavBottomProps = $props();
 </script>
 
-<main class="overflow-x-clip">
+<main class={["overflow-x-clip", (currentPath === "/statistik-data" || isKecamatanStatisticsPath(currentPath) || currentPath === "/perbaikan-data-desil" || currentPath === "/kegiatan") && "orange-page"]}>
   {#key currentPath}
-    {#if currentPath === loginRoute.path}
-      <LoginPage {navigate} />
-    {:else if currentPath === "/statistik-data"}
+
+    {#if currentPath === "/statistik-data"}
       <StatisticsPage {navigate} />
     {:else if isKecamatanStatisticsPath(currentPath)}
       <KecamatanStatisticsPage {currentPath} {navigate} />

@@ -8,7 +8,7 @@
     isNavbarScrolled = false,
     searchDialogOpen = $bindable(false),
     navigate,
-    showToast
+    showToast,
   }: NavbarProps = $props();
 
   let mobileMenuOpen = $state(false);
@@ -19,72 +19,117 @@
   }
 
   function isActivePath(path: string) {
-    return currentPath === path || (path !== "/" && currentPath.startsWith(`${path}/`));
+    return (
+      currentPath === path ||
+      (path !== "/" && currentPath.startsWith(`${path}/`))
+    );
   }
 </script>
 
-<nav class={["sticky top-0 z-50 border-b border-ink-line bg-ink text-portal-body transition-shadow", isNavbarScrolled && "shadow-md"]}>
-  <div class="page-container flex min-h-17 items-center justify-between gap-4 md:min-h-16">
-    <button type="button" class="inline-flex min-w-0 items-center gap-3 text-left text-inverse" onclick={() => handleNavClick("/")}>
-      <img src="/logo.png" alt="Logo BPS" class="size-11 shrink-0 rounded-md bg-surface p-1 object-contain" />
-      <span class="grid min-w-0 leading-[1.15]">
-        <strong class="text-base font-extrabold md:text-lg">Pojok BPS Muba</strong>
-        <small class="mt-1 text-[0.68rem] text-portal-muted md:text-xs">BPS Kabupaten Musi Banyuasin</small>
-      </span>
-    </button>
+<nav
+  class={[
+    "sticky top-0 z-50 border-b  border-ink-line bg-ink text-portal-body transition-shadow",
+    isNavbarScrolled && "shadow-md",
+  ]}
+>
+  <div class="max-w-7xl  mx-auto">
+    <div
+      class=" flex min-h-17 items-center justify-between gap-4 md:min-h-16"
+    >
+      <button
+        type="button"
+        class="inline-flex min-w-0 items-center gap-3 text-left text-inverse"
+        onclick={() => handleNavClick("/")}
+      >
+        <img
+          src="/logo.png"
+          alt="Logo BPS"
+          class="size-11 shrink-0 rounded-md bg-surface p-1 object-contain"
+        />
+        <span class="grid min-w-0 leading-[1.15]">
+          <strong class="text-base font-extrabold md:text-lg"
+            >Betandang</strong
+          >
+          <small class="mt-1 text-[0.68rem] text-portal-muted md:text-xs"
+            >BPS Kabupaten Musi Banyuasin</small
+          >
+        </span>
+      </button>
 
-    <div class="flex shrink-0 items-center gap-2.5">
-      <button
-        type="button"
-        class="hidden min-h-10 min-w-62.5 items-center justify-between gap-3 rounded-lg border border-ink-line bg-ink-soft px-3 text-sm text-portal-body md:inline-flex"
-        onclick={() => (searchDialogOpen = true)}
-        aria-label="Buka pencarian"
-      >
-        <span>Cari topik data</span>
-        <kbd class="min-w-13.5 rounded-md border border-inverse/15 px-1.5 py-0.5 text-[0.7rem] font-bold text-portal-text">Ctrl K</kbd>
-      </button>
-      <div class="hidden items-center rounded-lg border border-ink-line bg-ink-soft p-0.5 md:inline-flex" aria-label="Pilihan bahasa">
-        <button type="button" class="min-h-8 min-w-9 rounded-md bg-bps-sky/20 text-xs font-bold text-portal-text" onclick={() => showToast("Bahasa Indonesia aktif.")}>ID</button>
-        <button type="button" class="min-h-8 min-w-9 rounded-md text-xs font-bold text-portal-muted hover:text-portal-text" onclick={() => showToast("Versi bahasa Inggris belum tersedia.")}>EN</button>
+      <div class="flex shrink-0 items-center gap-2.5">
+        <button
+          type="button"
+          class="hidden min-h-10 min-w-62.5 items-center justify-between gap-3 rounded-lg border border-ink-line bg-ink-soft px-3 text-sm text-portal-body md:inline-flex"
+          onclick={() => (searchDialogOpen = true)}
+          aria-label="Buka pencarian"
+        >
+          <span>Cari topik data</span>
+          <kbd
+            class="min-w-13.5 rounded-md border border-inverse/15 px-1.5 py-0.5 text-[0.7rem] font-bold text-portal-text"
+            >Ctrl K</kbd
+          >
+        </button>
+        <div
+          class="hidden items-center rounded-lg border border-ink-line bg-ink-soft p-0.5 md:inline-flex"
+          aria-label="Pilihan bahasa"
+        >
+          <button
+            type="button"
+            class="min-h-8 min-w-9 rounded-md bg-bps-sky/20 text-xs font-bold text-portal-text"
+            onclick={() => showToast("Bahasa Indonesia aktif.")}>ID</button
+          >
+          <button
+            type="button"
+            class="min-h-8 min-w-9 rounded-md text-xs font-bold text-portal-muted hover:text-portal-text"
+            onclick={() => showToast("Versi bahasa Inggris belum tersedia.")}
+            >EN</button
+          >
+        </div>
+
+        <button
+          type="button"
+          class="inline-flex min-h-10 items-center rounded-lg border border-bps-sky bg-bps-sky px-3.5 text-sm font-extrabold text-inverse xl:hidden"
+          onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
+          aria-label="Buka menu"
+          aria-expanded={mobileMenuOpen}
+        >
+          Menu
+        </button>
       </div>
-    
-      <button
-        type="button"
-        class="inline-flex min-h-10 items-center rounded-lg border border-bps-sky bg-bps-sky px-3.5 text-sm font-extrabold text-inverse xl:hidden"
-        onclick={() => (mobileMenuOpen = !mobileMenuOpen)}
-        aria-label="Buka menu"
-        aria-expanded={mobileMenuOpen}
+    </div>
+
+    <div class="hidden border-t border-ink-line xl:block">
+      <nav
+        class=" flex min-h-11.5 items-center justify-between gap-4"
+        aria-label="Navigasi utama"
       >
-        Menu
-      </button>
+        <ul class="flex items-center gap-1">
+          {#each navItems as item}
+            <li>
+              <a
+                href={item.path}
+                class="inline-flex min-h-9.5 items-center border-b-2 border-transparent px-3 text-sm font-bold whitespace-nowrap text-portal-muted hover:border-bps-sky hover:text-portal-text aria-[current=page]:border-bps-sky aria-[current=page]:text-portal-text"
+                aria-current={isActivePath(item.path) ? "page" : undefined}
+                onclick={(event) => {
+                  event.preventDefault();
+                  handleNavClick(item.path);
+                }}
+              >
+                {item.label}
+              </a>
+            </li>
+          {/each}
+        </ul>
+        <span class="text-xs text-portal-muted">{currentDate}</span>
+      </nav>
     </div>
   </div>
 
-  <div class="hidden border-t border-ink-line xl:block">
-    <nav class="page-container flex min-h-11.5 items-center justify-between gap-4" aria-label="Navigasi utama">
-      <ul class="flex items-center gap-1">
-        {#each navItems as item}
-          <li>
-            <a
-              href={item.path}
-              class="inline-flex min-h-9.5 items-center border-b-2 border-transparent px-3 text-sm font-bold whitespace-nowrap text-portal-muted hover:border-bps-sky hover:text-portal-text aria-[current=page]:border-bps-sky aria-[current=page]:text-portal-text"
-              aria-current={isActivePath(item.path) ? "page" : undefined}
-              onclick={(event) => {
-                event.preventDefault();
-                handleNavClick(item.path);
-              }}
-            >
-              {item.label}
-            </a>
-          </li>
-        {/each}
-      </ul>
-      <span class="text-xs text-portal-muted">{currentDate}</span>
-    </nav>
-  </div>
-
   {#if mobileMenuOpen}
-    <nav class="grid gap-1 border-t border-ink-line bg-ink px-4 pt-3.5 pb-4 xl:hidden" aria-label="Navigasi seluler">
+    <nav
+      class="grid gap-1 border-t border-ink-line bg-ink px-4 pt-3.5 pb-4 xl:hidden"
+      aria-label="Navigasi seluler"
+    >
       {#each navItems as item}
         <a
           href={item.path}

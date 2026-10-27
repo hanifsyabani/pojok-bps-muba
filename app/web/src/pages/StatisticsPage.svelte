@@ -10,9 +10,9 @@
   import { Input } from "$lib/components/ui/input/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
   import MubaMap from "../components/stats/muba-map.svelte";
+  import GeneralDashboard from "../components/stats/general-dashboard.svelte";
   import {
     statisticsDistricts,
-    statisticsOverview,
     statisticsOverviewCards,
   } from "../constants/statistics-overview";
   import { formatStatisticsValue } from "../lib/statistics";
@@ -33,7 +33,7 @@
 
 <HeaderPage title="Statistik" />
 <section
-  class="bg-base py-7 sm:py-9 lg:py-10"
+  class="bg-home-base py-7 sm:py-9 lg:py-10"
   aria-labelledby="statistics-title"
 >
   <div class="statistics-container">
@@ -46,8 +46,14 @@
       >
         {#each statisticsOverviewCards as card (card.id)}
           <article
-            class="flex min-w-0 flex-col gap-3 rounded-xl border border-border-subtle bg-surface p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-5 lg:flex-col lg:items-start xl:flex-row xl:items-center xl:px-5 xl:py-6"
+            class="relative isolate flex min-w-0 flex-col gap-3 overflow-hidden rounded-xl border border-border-subtle bg-surface p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-5 lg:flex-col lg:items-start xl:flex-row xl:items-center xl:px-5 xl:py-6"
           >
+            <img
+              src="/gambo-pattern.png"
+              alt=""
+              aria-hidden="true"
+              class="pointer-events-none absolute inset-0 -z-10 size-full object-cover opacity-4"
+            />
             <div
               class={[
                 "grid size-11 shrink-0 place-items-center rounded-2xl sm:size-14 xl:size-15",
@@ -87,7 +93,6 @@
                 {formatStatisticsValue(card.value)}
               </p>
               <p class="mt-1 text-xs text-muted">{card.unit}</p>
-             
             </div>
           </article>
         {/each}
@@ -108,7 +113,6 @@
           <h2 id="district-list-title" class=" font-bold text-ink">
             Daftar Kecamatan
           </h2>
-         
         </div>
         <div class="mt-4">
           <div class="relative">
@@ -177,8 +181,9 @@
             </li>
           {/each}
         </ul>
-       
       </aside>
     </div>
   </div>
 </section>
+
+<GeneralDashboard />

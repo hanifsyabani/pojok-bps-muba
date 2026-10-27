@@ -6,7 +6,7 @@
 
 <HeaderPage title="Aktivitas" />
 <section class="bg-base py-6 md:py-8">
-  <div class="mx-auto w-full max-w-295">
+  <div class="page-container max-w-295">
     <ActivityCalendar />
   </div>
 </section>

@@ -12,12 +12,12 @@
   desc="Formulir pengajuan perbaikan desil"
 />
 
-<section class="bg-surface py-12 md:py-16">
+<section class="bg-base py-12 md:py-16">
   <div
     class="page-container grid items-start gap-5 xl:grid-cols-[330px_minmax(0,1fr)]"
   >
     <aside
-      class="border-b border-border-default pb-5 xl:sticky xl:top-32 xl:border-b-0 xl:pr-5"
+      class="rounded-lg border border-border-default bg-surface p-5 xl:sticky xl:top-32"
     >
       <h2 class="mb-2 text-[1rem] font-bold text-ink">
         Alur pengajuan website

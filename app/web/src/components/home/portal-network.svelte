@@ -29,8 +29,7 @@
   </svg>
 
   <button type="button" class="relative col-span-full flex min-h-16 items-center justify-center gap-3 rounded-lg border border-bps-sky/60 bg-ink-soft px-4 py-2 text-inverse shadow-md hover:border-bps-sky hover:bg-ink-line lg:absolute lg:top-[49.4%] lg:left-1/2 lg:w-56 lg:-translate-x-1/2 lg:-translate-y-1/2" onclick={() => navigate("/statistik-data")}>
-    <img src="/icons/chart-no-axes-column.svg" class="size-6 brightness-0 invert" alt="" />
-    <strong class="text-base font-bold">Pojok BPS Muba</strong>
+    <strong class="text-base font-bold">Tandang Peh</strong>
   </button>
 
   {#each topics as topic}

@@ -337,7 +337,7 @@
     <div class="grid gap-3" aria-live="polite">
       {#each uploads as item (item.id)}
         <div
-          class="grid min-w-0 gap-3 rounded-lg border border-dashed border-border-strong bg-surface-strong p-4 data-[status=done]:border-bps-green data-[status=done]:bg-bps-green-light data-[status=invalid]:border-bps-orange data-[status=invalid]:bg-bps-orange-light"
+          class="grid min-w-0 gap-3 rounded-lg border border-dashed border-border-strong bg-surface-strong p-4 data-[status=done]:border-success data-[status=done]:bg-success-light data-[status=invalid]:border-bps-orange data-[status=invalid]:bg-bps-orange-light"
           data-status={item.status}
         >
           <div class="min-w-0">
@@ -406,7 +406,7 @@
               item.status === "invalid"
                 ? "font-semibold text-danger-text"
                 : item.status === "done"
-                  ? "text-bps-green-text"
+                  ? "text-success-text"
                   : "text-muted",
             )}
           >
@@ -460,7 +460,7 @@
 </form>
 
 <AlertDialog.Root bind:open={confirmOpen}>
-  <AlertDialog.Content onCloseAutoFocus={restoreSubmitFocus}>
+  <AlertDialog.Content class="orange-page" onCloseAutoFocus={restoreSubmitFocus}>
     <AlertDialog.Header>
       <AlertDialog.Title class="text-lg font-semibold text-ink">
         {editingSubmission ? "Simpan perubahan pengajuan?" : "Kirim pengajuan?"}

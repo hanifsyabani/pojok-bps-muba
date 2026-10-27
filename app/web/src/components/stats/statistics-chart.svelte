@@ -9,7 +9,7 @@
   import { formatStatisticsValue } from "../../lib/statistics";
   import type { StatisticsChartProps } from "../../types/statistics";
 
-  let { model, colorToken = "--color-bps-sky" }: StatisticsChartProps = $props();
+  let { model, colorToken = "--color-bps-sky", height }: StatisticsChartProps = $props();
   let container: HTMLDivElement;
   let chart = $state.raw<ReturnType<typeof echarts.init> | null>(null);
   let failed = $state(false);
@@ -22,10 +22,11 @@
     if (!chart) return;
     const theme = getComputedStyle(container);
     const color = (token: string) => theme.getPropertyValue(token).trim();
-    const palette = [color(colorToken), color("--color-bps-green-hover"), color("--color-bps-orange-hover"), color("--color-ink-soft")];
+    const palette = [color(colorToken), color("--color-bps-green-hover"), color("--color-gambo-gold"), color("--color-chart-four")];
     const kind = model.kind ?? "bar";
     const horizontal = kind === "bar";
-    const many = model.labels.length > (horizontal ? 10 : 12);
+    const visibleItems = model.visibleItems ?? 10;
+    const many = model.labels.length > (horizontal ? visibleItems : 12);
     const option: EChartsOption = {
       animation: false,
       color: palette,
@@ -60,7 +61,7 @@
         type: "piecewise", orient: "horizontal", left: "center", bottom: 0, itemWidth: 12, itemHeight: 12,
         selectedMode: false,
         textStyle: { color: color("--color-body"), fontSize: 10 },
-        pieces: matrix.categories.map((label, value) => ({ value, label, color: [color("--color-bps-green-hover"), color("--color-bps-sky"), color("--color-bps-orange-hover"), color("--color-danger-text")][value] })),
+        pieces: matrix.categories.map((label, value) => ({ value, label, color: [color("--color-bps-orange-light"), color("--color-bps-orange-border"), color("--color-bps-orange"), color("--color-bps-orange-text")][value] })),
       };
       option.tooltip = {
         trigger: "item", confine: true, renderMode: "richText",
@@ -84,11 +85,11 @@
         axisLabel: { color: color("--color-body"), fontSize: 10, width: horizontal ? 110 : 70, overflow: "truncate" as const, rotate: !horizontal && kind !== "line" ? 32 : 0, hideOverlap: !horizontal },
       };
       option.legend = { show: model.series.length > 1, top: 0, textStyle: { color: color("--color-body"), fontSize: 11 } };
-      option.grid = { top: model.series.length > 1 ? 35 : 15, bottom: many ? 55 : 30, left: 0, right: horizontal ? (many ? 28 : 45) : 12, containLabel: true };
+      option.grid = { top: model.series.length > 1 ? 35 : 15, bottom: many ? 55 : 30, left: horizontal ? 12 : 0, right: horizontal ? (many ? 28 : 65) : 12, containLabel: true };
       option.xAxis = horizontal ? valueAxis : { ...categoryAxis, boundaryGap: kind !== "line" };
       option.yAxis = horizontal ? { ...categoryAxis, inverse: true } : valueAxis;
       option.dataZoom = many ? [horizontal
-        ? { type: "slider", yAxisIndex: 0, right: 0, width: 12, startValue: 0, endValue: 9, showDetail: false, brushSelect: false, filterMode: "empty" }
+        ? { type: "slider", yAxisIndex: 0, right: 0, width: 12, startValue: 0, endValue: visibleItems - 1, showDetail: false, brushSelect: false, filterMode: "empty" }
         : { type: "slider", xAxisIndex: 0, bottom: 0, height: 14, startValue: 0, endValue: 11, showDetail: false, brushSelect: false, filterMode: "empty" }
       ] : [];
       option.series = model.series.map((series) => kind === "line" ? {
@@ -107,7 +108,12 @@
       failed = false;
       ready = true;
     } catch {
+      const failedChart = chart;
+      chart = null;
       failed = true;
+      failedChart.getZr().animation.stop();
+      try { failedChart.dispose(); }
+      catch { container.replaceChildren(); }
     }
   });
 
@@ -126,8 +132,8 @@
   });
 </script>
 
-<div class={["relative min-w-0", model.kind === "heatmap" ? "h-100" : "h-72"]} data-chart-kind={model.kind ?? "bar"}>
-  <div bind:this={container} class="h-full w-full" role="img" aria-label={`${model.title}, satuan ${model.unit}. Nilai lengkap tersedia melalui Lihat tabel data.`}></div>
+<div class="relative min-w-0" style:height={`${height ?? (model.kind === "heatmap" ? 400 : 288)}px`} data-chart-kind={model.kind ?? "bar"}>
+  <div bind:this={container} class="h-full w-full" role="img" aria-label={`${model.title}, satuan ${model.unit}. Nilai lengkap tersedia pada tabel data.`}></div>
   {#if model.kind === "donut" && ready && !failed}
     <div class="pointer-events-none absolute top-[43%] left-1/2 w-40 -translate-x-1/2 -translate-y-1/2 text-center" aria-hidden="true">
       <strong class="block text-2xl leading-tight font-bold text-ink tabular-nums">{formatStatisticsValue(total)}</strong>

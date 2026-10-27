@@ -22,6 +22,13 @@ sesuai implementasi saat ini.
 ## Kondisi Implementasi
 
 - Frontend menggunakan Svelte dan routing di sisi klien.
+- Beranda setelah jumbotron menampilkan Sekilas Musi Banyuasin, sorotan lima
+  kecamatan dengan pilihan indikator, peta ringkas interaktif beserta pilihan
+  kecamatan, akses layanan, tiga publikasi pilihan, dan ringkasan agenda.
+  Angka menggunakan sumber KCDA yang sama dengan halaman statistik. Publikasi
+  dan sampul merujuk halaman BPS; tautan baca membuka halaman sumber. Agenda
+  memakai jadwal nasional yang tersedia dan menampilkan keadaan kosong jika
+  belum ada agenda mendatang, dengan periode terdahulu ditandai selesai.
 - Indikator, profil, kontak, dan kegiatan publik merujuk sumber BPS yang
   dicantumkan pada halaman. Konten disimpan lokal dan tidak diperbarui otomatis.
 - Tautan layanan mengarah ke kanal resmi BPS yang sudah tersedia.
@@ -49,8 +56,16 @@ sesuai implementasi saat ini.
   daftar kecamatan dengan pencarian. Sorotan peta dan daftar saling terhubung.
   Ringkasan penduduk administrasi (DKB Dukcapil Semester I 2026), desa/kelurahan,
   dan SLS terkecil (2025) berasal dari agregasi seluruh kecamatan, disertai
-  periode dan unduhan workbook sumber. Luas wilayah tidak digunakan karena
-  sheet sumber ditandai tidak digunakan.
+  periode dan unduhan workbook sumber. Luas wilayah tidak digunakan pada kartu
+  ringkasan peta karena sheet sumber ditandai tidak digunakan.
+- Bagian Chart umum membandingkan 15 kecamatan pada seluruh 13 sheet yang
+  berakhiran `.1`, dengan pilihan indikator/tahun, urutan nilai, sorotan
+  tertinggi/terendah, tabel data, dan sumber. Pada bagian ini angka luas 2024
+  dari sheet 1.1 tetap ditampilkan meskipun ditandai tidak digunakan dalam
+  workbook, dengan catatan yang terlihat. Kepadatan merupakan perhitungan
+  penduduk administrasi DKB Semester I 2026 dibagi luas 2024 tersebut, bukan
+  kepadatan resmi yang telah diverifikasi. Kategori fasilitas tidak dijumlahkan
+  karena desa dapat muncul di beberapa kategori; penanda kosong tetap kosong.
 - Halaman Kegiatan berisi satu kalender interaktif. Jadwal disimpan lokal di
   `app/web/src/constants/activities.ts`, bersumber dari pengumuman BPS, dan
   ditandai dengan cakupan nasional. Kalender memakai zona waktu Asia/Jakarta,
@@ -92,6 +107,11 @@ Base      #F8FAFC
 ```
 
 Token warna utama berada di blok `@theme` dalam `app/web/src/app.css`.
+Halaman Statistik (termasuk rincian kecamatan), Kegiatan, dan form DTSEN
+memakai utility `orange-page` untuk latar hangat, aksen oranye, border krem,
+serta grafik dan peta dengan variasi warna oranye. Tema ini dibatasi pada
+konten halaman dan dialog konfirmasi DTSEN. Warna validasi berhasil/gagal
+tetap memakai token status tersendiri agar hasilnya mudah dibedakan.
 Halaman dan komponen menggunakan utility Tailwind. Utility bersama untuk tombol,
 input, dan container juga didefinisikan dalam file tersebut.
 
@@ -116,6 +136,9 @@ Workbook sumber berada di `app/web/public/Data KCDA 2026.xlsx`. Dashboard memaka
 hasil ekstraksi per kecamatan dalam `app/web/src/constants/kcda/`, yang dimuat
 sesuai halaman. Importir juga menghasilkan `app/web/src/constants/kcda-overview.json`
 untuk ringkasan umum, tanpa memuat seluruh tabel kecamatan di halaman peta.
+Data ringkas perbandingan untuk Chart umum dihasilkan sebagai
+`app/web/src/constants/kcda-general.json`; konfigurasi sorotannya berada di
+`app/web/src/constants/statistics-comparison.ts`.
 Konfigurasi tampilannya berada di `app/web/src/constants/statistics-overview.ts`.
 Setelah mengganti atau memperbaiki workbook, jalankan importir
 sebelum build (Python 3, tanpa paket tambahan):
@@ -123,6 +146,8 @@ sebelum build (Python 3, tanpa paket tambahan):
 ```bash
 python scripts/import-kcda.py
 bun test scripts/statistics.test.ts
+bun test scripts/statistics-comparison.test.ts
+bun test scripts/home.test.ts
 ```
 
 Importir mempertahankan periode, nilai nol, penanda kosong, dan sumber pada tiap
@@ -266,6 +291,14 @@ yang diizinkan mengembalikan 204 dengan header `Access-Control-Allow-Origin`
 sesuai origin tersebut. CORS tidak dapat berjalan jika function gagal startup.
 
 ## Sumber Konten
+
+Publikasi pilihan Beranda dan sampulnya diperiksa pada 27 Oktober 2026:
+[Kabupaten Musi Banyuasin Dalam Angka 2026](https://musibanyuasinkab.bps.go.id/id/publication/2026/02/27/b3b3d2d27b2e4d45d27aefb6/kabupaten-musi-banyuasin-dalam-angka-2026.html),
+[Statistik Daerah Kabupaten Musi Banyuasin 2025](https://musibanyuasinkab.bps.go.id/id/publication/2025/09/30/0be1ebbaa8f19df66ba1bc3f/statistik-daerah-kabupaten-musi-banyuasin-2025.html), dan
+[Statistik Kesejahteraan Rakyat Kabupaten Musi Banyuasin 2025](https://musibanyuasinkab.bps.go.id/id/publication/2025/11/28/b8e08bbb3f2c400b0d0628b4/statistik-kesejahteraan-rakyat-kabupaten-musi-banyuasin-2025.html).
+Sampul asli dari metadata `og:image` halaman tersebut disimpan lokal dalam
+`app/web/public/publications/`. Konfigurasi Beranda berada di
+`app/web/src/constants/home.ts`.
 
 Konten diperiksa pada 11 Oktober 2026. Periode statistik mengikuti masing-masing
 indikator, bukan tahun pemeriksaan konten.

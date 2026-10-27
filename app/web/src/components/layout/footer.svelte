@@ -12,13 +12,13 @@
     <div class="page-container flex items-center justify-center gap-5 py-10 opacity-20 sm:gap-7 md:py-12 lg:gap-10 lg:py-16">
       <img src="/logo.png" alt="" class="w-16 shrink-0 brightness-0 invert sm:w-24 lg:w-36" width="661" height="512" />
       <p class="min-w-0 text-[2rem] leading-[1.1] font-bold text-inverse sm:text-5xl lg:text-[4.5rem] xl:text-[5.25rem]">
-        Pojok BPS <span class="block sm:inline">Muba</span>
+        Betandang
       </p>
     </div>
   </div>
 
   <div
-    class="page-container grid gap-x-8 gap-y-10 py-10 md:grid-cols-2 md:py-14 xl:grid-cols-[1.45fr_0.8fr_1fr_1.1fr] xl:gap-x-10 xl:py-16"
+    class="px-10 grid gap-x-8 gap-y-10 py-10 md:grid-cols-2 md:py-14 xl:grid-cols-[1.45fr_0.8fr_1fr_1.1fr] xl:gap-x-10 xl:py-16"
   >
     <div>
       <h2 class="text-xl leading-snug font-semibold text-inverse">Terhubung dengan BPS Muba</h2>
@@ -91,22 +91,9 @@
   </div>
 
   <div class="border-t border-inverse/15">
-    <div class="page-container flex flex-col items-start justify-between gap-2 py-5 text-xs sm:flex-row sm:items-center sm:gap-6">
-      <span>&copy; {new Date().getFullYear()} Pojok BPS Muba</span>
-      <div class="flex flex-wrap items-center gap-x-6 gap-y-1">
-       
-        <a
-          class="inline-flex min-h-11 items-center gap-2 hover:text-inverse focus-visible:outline-inverse"
-          href={loginRoute.path}
-          onclick={(event) => {
-            event.preventDefault();
-            navigate(loginRoute.path);
-          }}
-        >
-          <LogInIcon class="size-4" aria-hidden="true" />
-          {loginRoute.label}
-        </a>
-      </div>
+    <div class="page-container text-center gap-2 py-5 text-xs sm:flex-row sm:items-center sm:gap-6">
+      <span>&copy; {new Date().getFullYear()} Badan Pusat Statistik Musi Banyuasin</span>
+      
     </div>
   </div>
 </footer>

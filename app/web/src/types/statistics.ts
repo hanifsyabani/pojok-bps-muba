@@ -47,6 +47,7 @@ export type StatisticsChartModel = {
   kind?: StatisticsChartKind;
   matrix?: { columns: string[]; categories: string[]; values: [number, number, number][] };
   totalValues?: number;
+  visibleItems?: number;
 };
 
 export type StatisticsChartKind = "bar" | "column" | "donut" | "line" | "heatmap";
@@ -56,4 +57,31 @@ export type StatisticsPresentation = {
 };
 
 export type StatisticsSheetProps = { sheet: StatisticsSheet };
-export type StatisticsChartProps = { model: StatisticsChartModel; colorToken?: string };
+export type StatisticsChartProps = { model: StatisticsChartModel; colorToken?: string; height?: number };
+
+export type StatisticsComparisonMetric = {
+  id: string;
+  label: string;
+  unit: string;
+  periods: string[];
+  values: Partial<Record<string, (number | null)[]>>;
+  note?: string;
+};
+
+export type StatisticsComparisonSheet = Pick<StatisticsSheet, "id" | "title" | "topic" | "sources" | "notes"> & {
+  metrics: StatisticsComparisonMetric[];
+};
+
+export type StatisticsComparisons = {
+  workbook: string;
+  sha256: string;
+  districts: string[];
+  sheets: StatisticsComparisonSheet[];
+};
+
+export type StatisticsComparisonRow = {
+  slug: string;
+  name: string;
+  value: number | null;
+  rank: number | null;
+};

@@ -6,6 +6,7 @@ The workbook is the source of truth. Missing markers and suspect counts stay raw
 
 import hashlib
 import json
+import math
 import re
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -131,6 +132,7 @@ def extract(archive):
     yellow_fills = {i for i, fill in enumerate(fills) if any(c.attrib.get("rgb", "").endswith("FFFF00") or c.attrib.get("indexed") == "6" for c in fill.findall(".//s:fgColor", NS))}
     yellow_styles = {i for i, style in enumerate(styles.find("s:cellXfs", NS)) if int(style.attrib.get("fillId", 0)) in yellow_fills}
     sheets = []
+    comparison_area = None
     for entry in ET.fromstring(archive.read("xl/workbook.xml")).findall("s:sheets/s:sheet", NS):
         sheet_id = entry.attrib["name"]
         target = relations[entry.attrib["{http://schemas.openxmlformats.org/officeDocument/2006/relationships}id"]]
@@ -167,6 +169,12 @@ def extract(archive):
         elif sheet_id in ("1.1", "1.2"):
             sheet["kind"] = "withheld"
             sheet["notes"] = [table.text(2, 1), "Angka pada sheet ini tidak digrafikkan karena workbook menyatakan data tidak digunakan. Data pengganti belum disertakan."]
+            if sheet_id == "1.1":
+                # General comparisons retain the marked figures at the user's request.
+                comparison_area = dict(period=period, values={
+                    DISTRICTS[table.text(row, 8)]: number(table.get(row, 10))
+                    for row in range(5, table.height + 1) if table.text(row, 8) in DISTRICTS
+                }, warning=table.text(2, 1))
         elif sheet_id == "3.2":
             columns(["Laki-laki", "Perempuan", "Jumlah"])
             sheet["notes"] = ["Proyeksi penduduk BPS 2020–2035. Berbeda basis dengan data administrasi Dukcapil pada sheet 3.1; jangan dijumlahkan atau dipakai sebagai tren yang sama."]
@@ -218,12 +226,14 @@ def extract(archive):
                     if not label:
                         continue
                     crop = re.sub(r"(?<=[A-Za-z])\d+$", "", label.split("/")[0].split("(")[0].strip())
-                    row_unit = "pohon" if "(pohon/" in label.lower().replace(" ", "") else "tangkai" if sheet_id == "5.6" else unit
-                    group = f"Produksi ({row_unit})" if sheet_id == "5.6" else f"Satuan ({row_unit})" if sheet_id == "5.3" else "Utama"
+                    row_unit = "m²" if sheet_id == "5.1" and "(m2/" in label.lower().replace(" ", "") else "pohon" if "(pohon/" in label.lower().replace(" ", "") else "tangkai" if sheet_id == "5.6" else unit
+                    group = f"Produksi ({row_unit})" if sheet_id == "5.6" else f"Satuan ({row_unit})" if sheet_id in ("5.1", "5.3") else "Utama"
                     add(district, crop, period, [table.get(row, col)], group, row_unit)
             sheet["notes"] = ["Periode mengikuti setiap blok tahun pada sheet, termasuk tahun 2021 yang tersedia di luar rentang pada judul."]
             if sheet_id in ("5.3", "5.6"):
                 sheet["notes"].append("Jenis tanaman dengan satuan berbeda dipisahkan ke pilihan tabel tersendiri; angka antarsatuan tidak dijumlahkan.")
+            if sheet_id == "5.1":
+                sheet["notes"].append("Luas panen jamur memakai m² sesuai kolom sumber; tanaman lainnya memakai ha. Kedua satuan ditampilkan terpisah.")
         elif sheet_id in ("1.3", "2.1.1", "2.2.1", "2.2.2", "2.2.3", "3.1", "4.1.5", "4.1.6"):
             header = 4 if sheet_id in ("1.3", "4.1.6") else 2
             count = {"1.3": 2, "2.1.1": 4, "2.2.1": 3, "2.2.2": 4, "2.2.3": 4, "3.1": 6, "4.1.5": 3, "4.1.6": 10}[sheet_id]
@@ -290,12 +300,89 @@ def extract(archive):
                 sheet["notes"] = ["Format baru menggabungkan TK/RA, SD/MI, dan jenjang sejenis. Rincian jenjang lama disajikan terpisah karena tidak boleh dijumlahkan dengan format baru."]
         sheet["periods"] = sorted({r["period"] for r in sheet["rows"]}, reverse=True) or [period]
         sheets.append(sheet)
-    return dict(workbook=SOURCE.name, sha256=hashlib.sha256(SOURCE.read_bytes()).hexdigest(), sheets=sheets)
+    return dict(workbook=SOURCE.name, sha256=hashlib.sha256(SOURCE.read_bytes()).hexdigest(), sheets=sheets), comparison_area
+
+
+def general_comparisons(data, area):
+    districts = list(DISTRICTS.values())
+    result = dict(workbook=data["workbook"], sha256=data["sha256"], districts=districts, sheets=[])
+
+    def valid(value, unit):
+        return (isinstance(value, (int, float)) and math.isfinite(value) and value >= 0 and
+                (unit not in ("jiwa", "SLS", "desa/kelurahan") or float(value).is_integer()))
+
+    def complete_total(rows, column, unit):
+        values = [row["values"][column] for row in rows]
+        return sum(values) if values and all(valid(value, unit) for value in values) else None
+
+    for sheet in data["sheets"]:
+        if not sheet["id"].endswith(".1"):
+            continue
+        comparison = {key: sheet[key] for key in ("id", "title", "topic", "sources", "notes")}
+        comparison["metrics"] = []
+
+        def metric(metric_id, label, unit, periods, value_at, note=None):
+            item = dict(id=metric_id, label=label, unit=unit, periods=periods,
+                        values={period: [value_at(district, period) for district in districts] for period in periods})
+            if note:
+                item["note"] = note
+            comparison["metrics"].append(item)
+
+        if sheet["id"] == "1.1":
+            assert area and set(area["values"]) == set(districts), "Area comparison must cover all districts."
+            comparison["notes"] = [area["warning"], "Angka tetap ditampilkan untuk perbandingan sesuai isian workbook, dengan status ditandai tidak digunakan pada sumber."]
+            metric("area", "Luas wilayah", "km²", [area["period"]],
+                   lambda district, period: area["values"][district],
+                   "Ditandai tidak digunakan pada sumber karena selisih dengan tahun lalu. Angka ini bukan luas pengganti yang telah diverifikasi.")
+        elif sheet["id"] in ("2.1.1", "2.2.1", "3.1"):
+            columns = {"2.1.1": [1], "2.2.1": [0, 1, 2], "3.1": [2, 0, 1]}[sheet["id"]]
+            for column in columns:
+                unit = sheet["columns"][column]["unit"]
+                label = sheet["columns"][column]["label"]
+                if sheet["id"] == "2.2.1":
+                    label = f"Desa/kelurahan dengan {label.lower()}"
+
+                def aggregate(district, period):
+                    rows = [row for row in sheet["rows"] if row["district"] == district and row["period"] == period]
+                    if sheet["id"] != "2.2.1":
+                        return complete_total(rows, column, unit)
+                    values = [clean(row["values"][column]).upper() for row in rows]
+                    return values.count("ADA") if values and all(v in ("ADA", "TIDAK ADA") for v in values) else None
+
+                metric(f"column-{column}", label, unit, sheet["periods"], aggregate)
+            if sheet["id"] == "2.1.1":
+                comparison["notes"] = [*sheet["notes"], "Jumlah SLS terkecil dijumlahkan per kecamatan. Banyak jenjang SLS tidak dijumlahkan."]
+            if sheet["id"] == "3.1":
+                def density(district, period):
+                    rows = [row for row in sheet["rows"] if row["district"] == district and row["period"] == period]
+                    population = complete_total(rows, 2, "jiwa")
+                    size = area["values"].get(district)
+                    return population / size if population is not None and valid(size, "km²") and size > 0 else None
+
+                metric("density", "Kepadatan penduduk (perhitungan)", "jiwa/km²", sheet["periods"], density,
+                       f"Perhitungan: penduduk administrasi DKB Semester I 2026 ÷ luas wilayah {area['period']} (sheet 1.1). Tahun berbeda; luas ditandai tidak digunakan pada sumber. Bukan angka kepadatan resmi yang telah diverifikasi. Kepadatan desa tidak dijumlahkan atau dirata-ratakan.")
+        else:
+            for group, label in dict.fromkeys((row["group"], row["label"]) for row in sheet["rows"]):
+                rows = [row for row in sheet["rows"] if row["group"] == group and row["label"] == label]
+                unit = rows[0].get("unit", sheet["unit"])
+                periods = sorted({row["period"] for row in rows}, reverse=True)
+
+                def value_at(district, period):
+                    row = next((row for row in rows if row["district"] == district and row["period"] == period), None)
+                    value = row["values"][0] if row else None
+                    return value if valid(value, unit) else None
+
+                metric(f"{group}|{label}", label if group == "Utama" or group.startswith("Satuan (") else f"{label} ({group.lower()})",
+                       unit, periods, value_at)
+            if sheet["unit"] == "desa/kelurahan":
+                comparison["notes"] = [*sheet["notes"], "Nilai menunjukkan jumlah desa/kelurahan pada kategori terpilih, bukan jumlah fasilitas. Satu desa dapat tercatat dalam beberapa kategori; kategori tidak dijumlahkan."]
+        result["sheets"].append(comparison)
+    return result
 
 
 if __name__ == "__main__":
     with ZipFile(SOURCE) as archive:
-        data = extract(archive)
+        data, comparison_area = extract(archive)
     assert len(data["sheets"]) == 38, "Workbook sheet coverage changed; review the importer."
     for sheet in data["sheets"]:
         if sheet["kind"] not in ("withheld", "glossary"):
@@ -329,4 +416,6 @@ if __name__ == "__main__":
                                          villages=len(villages) if villages else None,
                                          sls=total("2.1.1", "sls", 1)))
     (OUTPUT.parent / "kcda-overview.json").write_text(json.dumps(overview, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    comparisons = general_comparisons(data, comparison_area)
+    (OUTPUT.parent / "kcda-general.json").write_text(json.dumps(comparisons, ensure_ascii=False, separators=(",", ":")) + "\n", encoding="utf-8")
     print(f"Imported {len(data['sheets'])} sheets, {sum(len(s['rows']) for s in data['sheets'])} rows for {len(DISTRICTS)} districts to {OUTPUT.relative_to(ROOT)}")

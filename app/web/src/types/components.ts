@@ -44,6 +44,7 @@ export type PortalNetworkProps = NavigationProps & {
 export type StatisticsPageProps = NavigationProps;
 export type MubaMapProps = NavigationProps & {
   activeKecamatan?: string | null;
+  compact?: boolean;
 };
 
 export type KecamatanStatisticsPageProps = NavigationProps & {

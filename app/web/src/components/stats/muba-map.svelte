@@ -27,7 +27,7 @@
     name?: string;
   };
 
-  let { navigate, activeKecamatan = $bindable(null) }: MubaMapProps = $props();
+  let { navigate, activeKecamatan = $bindable(null), compact = false }: MubaMapProps = $props();
   let mapElement: HTMLDivElement;
   let mapStatus = $state<"loading" | "ready" | "error">("loading");
   let chart: ReturnType<typeof echarts.init> | null = null;
@@ -41,6 +41,11 @@
 
   $effect(() => {
     if (mapStatus !== "ready" || !chart) return;
+    if (compact) {
+      chart.dispatchAction({ type: "unselect", seriesIndex: 0 });
+      if (focusedKecamatanIndex >= 0) chart.dispatchAction({ type: "select", seriesIndex: 0, dataIndex: focusedKecamatanIndex });
+      return;
+    }
     chart.dispatchAction({ type: "downplay", seriesIndex: 0 });
     if (focusedKecamatanIndex >= 0) {
       chart.dispatchAction({ type: "highlight", seriesIndex: 0, dataIndex: focusedKecamatanIndex });
@@ -94,6 +99,7 @@
           animation: false,
           textStyle: { fontFamily: theme.fontFamily },
           tooltip: {
+            show: !compact,
             trigger: "item",
             confine: true,
             backgroundColor: color("--color-surface"),
@@ -115,17 +121,22 @@
               map: mubaMapName,
               nameProperty: "nmkec",
               roam: false,
+              selectedMode: compact ? "single" : false,
+              select: {
+                label: { show: false },
+                itemStyle: { areaColor: color("--color-bps-orange"), borderColor: color("--color-bps-orange-hover"), borderWidth: 1 }
+              },
               cursor: "pointer",
               layoutCenter: ["50%", "50%"],
               layoutSize: "94%",
               data: mubaKecamatanRoutes.map((route) => ({
                 name: route.geoName,
                 value: 1,
-                itemStyle: { areaColor: color(route.colorToken) },
-                emphasis: { itemStyle: { areaColor: color(route.colorToken) } }
+                itemStyle: { areaColor: color(compact ? "--color-bps-orange-light" : route.colorToken) },
+                emphasis: { itemStyle: { areaColor: color(compact ? "--color-bps-orange" : route.colorToken) } }
               })),
               label: {
-                show: true,
+                show: !compact,
                 formatter: (params: MapEventParams) => {
                   const name = formatKecamatanName(params.name ?? "");
                   const words = name.split(" ");
@@ -139,19 +150,19 @@
                 textBorderWidth: 3
               },
               itemStyle: {
-                borderColor: color("--color-surface"),
-                borderWidth: 1.5
+                borderColor: color(compact ? "--color-bps-orange-border" : "--color-surface"),
+                borderWidth: compact ? 0.8 : 1.5
               },
               emphasis: {
                 focus: "self",
-                label: { show: true },
+                label: { show: !compact },
                 itemStyle: {
-                  borderColor: color("--color-ink"),
-                  borderWidth: 2
+                  borderColor: color(compact ? "--color-bps-orange-hover" : "--color-ink"),
+                  borderWidth: compact ? 1 : 2
                 }
               },
               blur: {
-                label: { show: true, opacity: 1 },
+                label: { show: !compact, opacity: 1 },
                 itemStyle: { opacity: 0.55 }
               }
             }
@@ -160,12 +171,14 @@
 
         chart.on("click", (params: MapEventParams) => {
           const route = getKecamatanRouteByGeoName(params.name ?? "");
-          if (route) navigate(route.path);
+          if (!route) return;
+          if (compact) activeKecamatan = route.geoName;
+          else navigate(route.path);
         });
         chart.on("mouseover", (params: MapEventParams) => {
           activeKecamatan = getKecamatanRouteByGeoName(params.name ?? "")?.geoName ?? null;
         });
-        chart.on("mouseout", clearMapFocus);
+        chart.on("mouseout", () => { if (!compact) clearMapFocus(); });
 
         resizeObserver = new ResizeObserver(() => {
           chart?.resize();
@@ -189,22 +202,22 @@
   });
 </script>
 
-  <p id="map-scroll-hint" class="px-3 py-2 text-xs text-muted sm:hidden">Geser peta ke samping untuk melihat seluruh wilayah.</p>
-  <div class="relative h-120 overflow-x-auto overflow-y-hidden rounded-lg bg-bps-sky-light/45 sm:h-160 lg:h-206">
+  {#if !compact}<p id="map-scroll-hint" class="px-3 py-2 text-xs text-muted sm:hidden">Geser peta ke samping untuk melihat seluruh wilayah.</p>{/if}
+  <div class={["relative overflow-x-auto overflow-y-hidden rounded-lg", compact ? "h-64 sm:h-72" : "h-120 bg-bps-sky-light/45 sm:h-160 lg:h-206"]}>
     
     <!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions (This map implements arrow-key selection and Enter navigation.) -->
     <div
       bind:this={mapElement}
-      class="h-full w-full min-w-140 focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-bps-sky sm:min-w-0"
+      class={["h-full w-full focus-visible:outline-3 focus-visible:-outline-offset-3 focus-visible:outline-bps-sky", !compact && "min-w-140 sm:min-w-0"]}
       role="application"
       tabindex="0"
       aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown Enter Escape"
-      aria-describedby="map-scroll-hint"
+      aria-describedby={compact ? undefined : "map-scroll-hint"}
       aria-label={focusedKecamatanIndex >= 0
         ? `Kecamatan ${mubaKecamatanRoutes[focusedKecamatanIndex].name}`
         : `Peta kecamatan Kabupaten Musi Banyuasin: ${mubaKecamatanRoutes.map((route) => route.name).join(", ")}. Gunakan tombol panah untuk memilih kecamatan, Enter untuk membuka halaman, dan Escape untuk menutup tooltip.`}
       onkeydown={handleMapKeydown}
-      onblur={clearMapFocus}
+      onblur={() => { if (!compact) clearMapFocus(); }}
     ></div>
 
     {#if mapStatus === "loading"}
@@ -214,7 +227,7 @@
     {:else if mapStatus === "error"}
       <div class="absolute inset-0 grid content-center justify-items-center gap-3 bg-bps-orange-light p-5 text-center" role="status">
         <p class="text-sm font-semibold text-ink">Peta belum dapat dimuat</p>
-        <p class="max-w-xs text-xs leading-relaxed text-body">Anda tetap dapat membuka statistik melalui daftar kecamatan. Muat ulang halaman untuk mencoba memuat peta kembali.</p>
+        <p class="max-w-xs text-xs leading-relaxed text-body">Anda tetap dapat membuka statistik melalui {compact ? "pilihan" : "daftar"} kecamatan. Muat ulang halaman untuk mencoba memuat peta kembali.</p>
       </div>
     {/if}
   </div>
